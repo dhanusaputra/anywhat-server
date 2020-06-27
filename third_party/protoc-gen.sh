@@ -1,0 +1,1 @@
+protoc --proto_path=api/proto --go_out=plugins=grpc:api/proto anywhat.proto

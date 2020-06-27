@@ -1,0 +1,88 @@
+syntax = "proto3";
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = ".;pb";
+
+// Anywhat ...
+service Anywhat {
+    // GetAnything ...
+    rpc GetAnything (GetAnythingRequest) returns (GetAnythingResponse){}
+    // UpdateAnything ...
+    rpc UpdateAnything (UpdateAnythingRequest) returns (UpdateAnythingResponse){}
+    // CreateAnything ...
+    rpc CreateAnything (CreateAnythingRequest) returns (CreateAnythingResponse){}
+    // DeleteAnything ...
+    rpc DeleteAnything (DeleteAnythingRequest) returns (DeleteAnythingResponse){}
+    // ListAnything ...
+    rpc ListAnything (ListAnythingRequest) returns (ListAnythingResponse){}
+}
+
+// Anything ...
+message Anything {
+    string id = 1;
+    string title = 2;
+    string description = 3;
+    google.protobuf.Timestamp createdAt = 4;
+}
+
+// GetAnythingRequest ...
+message GetAnythingRequest {
+    string api = 1;
+    string id = 2;
+}
+
+// GetAnythingResponse ...
+message GetAnythingResponse{
+    string api = 1;
+    Anything Anything = 2;
+}
+
+// UpdateAnythingRequest ...
+message UpdateAnythingRequest {
+    string api = 1;
+    Anything Anything = 2;
+}
+
+// UpdateAnythingResponse ...
+message UpdateAnythingResponse{
+    string api = 1;
+    bool updated = 2;
+}
+
+// CreateAnythingRequest ...
+message CreateAnythingRequest {
+    string api = 1;
+    Anything Anything = 2;
+}
+
+// CreateAnythingResponse ...
+message CreateAnythingResponse{
+    string api = 1;
+    string id = 2;
+}
+
+// DeleteAnythingRequest ...
+message DeleteAnythingRequest {
+    string api = 1;
+    string id = 2;
+}
+
+// DeleteAnythingResponse ...
+message DeleteAnythingResponse{
+    string api = 1;
+    bool deleted = 2;
+}
+
+// ListAnythingRequest ...
+message ListAnythingRequest {
+    string api = 1;
+}
+
+// ListAnythingResponse ...
+message ListAnythingResponse{
+    string api = 1;
+    repeated Anything Anythings = 2;
+}
+
