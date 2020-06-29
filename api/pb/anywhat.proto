@@ -2,6 +2,7 @@ syntax = "proto3";
 package pb;
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
 
 option go_package = ".;pb";
 
@@ -16,7 +17,7 @@ service Anywhat {
     // DeleteAnything ...
     rpc DeleteAnything (DeleteAnythingRequest) returns (DeleteAnythingResponse){}
     // ListAnything ...
-    rpc ListAnything (ListAnythingRequest) returns (ListAnythingResponse){}
+    rpc ListAnything (google.protobuf.Empty) returns (ListAnythingResponse){}
 }
 
 // Anything ...
@@ -66,9 +67,6 @@ message DeleteAnythingRequest {
 message DeleteAnythingResponse{
     bool deleted = 1;
 }
-
-// ListAnythingRequest ...
-message ListAnythingRequest {}
 
 // ListAnythingResponse ...
 message ListAnythingResponse{

@@ -5,8 +5,8 @@ import (
 	"time"
 )
 
-// Service ...
-type Service interface {
+// Anywhat ...
+type Anywhat interface {
 	GetAnything(ctx context.Context, id string) (*Anything, error)
 	ListAnything(ctx context.Context) ([]*Anything, error)
 	CreateAnything(ctx context.Context, anything *Anything) (string, error)
@@ -22,29 +22,29 @@ type Anything struct {
 	CreatedAt   time.Time
 }
 
-type anywhatServer struct{}
+type anywhatService struct{}
 
 // NewService ...
-func NewService() Service {
-	return &anywhatServer{}
+func NewService() Anywhat {
+	return &anywhatService{}
 }
 
-func (s anywhatServer) GetAnything(ctx context.Context, id string) (*Anything, error) {
+func (s anywhatService) GetAnything(ctx context.Context, id string) (*Anything, error) {
 	return nil, nil
 }
 
-func (s anywhatServer) ListAnything(ctx context.Context) ([]*Anything, error) {
+func (s anywhatService) ListAnything(ctx context.Context) ([]*Anything, error) {
 	return nil, nil
 }
 
-func (s anywhatServer) CreateAnything(ctx context.Context, anything *Anything) (string, error) {
+func (s anywhatService) CreateAnything(ctx context.Context, anything *Anything) (string, error) {
 	return "", nil
 }
 
-func (s anywhatServer) UpdateAnything(ctx context.Context, anything *Anything) (bool, error) {
+func (s anywhatService) UpdateAnything(ctx context.Context, anything *Anything) (bool, error) {
 	return false, nil
 }
 
-func (s anywhatServer) DeleteAnything(ctx context.Context, id string) (bool, error) {
+func (s anywhatService) DeleteAnything(ctx context.Context, id string) (bool, error) {
 	return false, nil
 }
