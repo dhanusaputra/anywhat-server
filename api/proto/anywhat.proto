@@ -22,67 +22,56 @@ service Anywhat {
 // Anything ...
 message Anything {
     string id = 1;
-    string title = 2;
+    string name = 2;
     string description = 3;
     google.protobuf.Timestamp createdAt = 4;
 }
 
 // GetAnythingRequest ...
 message GetAnythingRequest {
-    string api = 1;
-    string id = 2;
+    string id = 1;
 }
 
 // GetAnythingResponse ...
 message GetAnythingResponse{
-    string api = 1;
-    Anything Anything = 2;
+    Anything Anything = 1;
 }
 
 // UpdateAnythingRequest ...
 message UpdateAnythingRequest {
-    string api = 1;
-    Anything Anything = 2;
+    Anything Anything = 1;
 }
 
 // UpdateAnythingResponse ...
 message UpdateAnythingResponse{
-    string api = 1;
-    bool updated = 2;
+    bool updated = 1;
 }
 
 // CreateAnythingRequest ...
 message CreateAnythingRequest {
-    string api = 1;
-    Anything Anything = 2;
+    Anything Anything = 1;
 }
 
 // CreateAnythingResponse ...
 message CreateAnythingResponse{
-    string api = 1;
-    string id = 2;
+    string id = 1;
 }
 
 // DeleteAnythingRequest ...
 message DeleteAnythingRequest {
-    string api = 1;
-    string id = 2;
+    string id = 1;
 }
 
 // DeleteAnythingResponse ...
 message DeleteAnythingResponse{
-    string api = 1;
-    bool deleted = 2;
+    bool deleted = 1;
 }
 
 // ListAnythingRequest ...
-message ListAnythingRequest {
-    string api = 1;
-}
+message ListAnythingRequest {}
 
 // ListAnythingResponse ...
 message ListAnythingResponse{
-    string api = 1;
-    repeated Anything Anythings = 2;
+    repeated Anything Anythings = 1;
 }
 
