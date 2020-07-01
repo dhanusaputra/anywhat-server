@@ -2,24 +2,17 @@ package service
 
 import (
 	"context"
-	"time"
+
+	"github.com/dhanusaputra/anywhat-server/api/pb"
 )
 
 // Anywhat ...
 type Anywhat interface {
-	GetAnything(ctx context.Context, id string) (*Anything, error)
-	ListAnything(ctx context.Context) ([]*Anything, error)
-	CreateAnything(ctx context.Context, anything *Anything) (string, error)
-	UpdateAnything(ctx context.Context, anything *Anything) (bool, error)
+	GetAnything(ctx context.Context, id string) (*pb.Anything, error)
+	ListAnything(ctx context.Context) ([]*pb.Anything, error)
+	CreateAnything(ctx context.Context, anything *pb.Anything) (string, error)
+	UpdateAnything(ctx context.Context, anything *pb.Anything) (bool, error)
 	DeleteAnything(ctx context.Context, id string) (bool, error)
-}
-
-// Anything ...
-type Anything struct {
-	ID          string
-	Name        string
-	Description string
-	CreatedAt   time.Time
 }
 
 type anywhatService struct{}
@@ -29,19 +22,19 @@ func NewService() Anywhat {
 	return &anywhatService{}
 }
 
-func (s anywhatService) GetAnything(ctx context.Context, id string) (*Anything, error) {
+func (s anywhatService) GetAnything(ctx context.Context, id string) (*pb.Anything, error) {
 	return nil, nil
 }
 
-func (s anywhatService) ListAnything(ctx context.Context) ([]*Anything, error) {
+func (s anywhatService) ListAnything(ctx context.Context) ([]*pb.Anything, error) {
 	return nil, nil
 }
 
-func (s anywhatService) CreateAnything(ctx context.Context, anything *Anything) (string, error) {
+func (s anywhatService) CreateAnything(ctx context.Context, anything *pb.Anything) (string, error) {
 	return "", nil
 }
 
-func (s anywhatService) UpdateAnything(ctx context.Context, anything *Anything) (bool, error) {
+func (s anywhatService) UpdateAnything(ctx context.Context, anything *pb.Anything) (bool, error) {
 	return false, nil
 }
 
