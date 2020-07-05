@@ -26,6 +26,7 @@ message Anything {
     string name = 2;
     string description = 3;
     google.protobuf.Timestamp createdAt = 4;
+    google.protobuf.Timestamp updatedAt = 5;
 }
 
 // GetAnythingRequest ...

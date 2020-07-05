@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+    db:
+      build:
+        context: ./pkg/db
+        dockerfile: ./pkg/db/db.dockerfile
+      environment:
+        POSTGRES_DB: admin
+        POSTGRES_USER: admin
+        POSTGRES_PASSWORD: 123456
+      restart: unless-stopped
+  
