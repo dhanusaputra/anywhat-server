@@ -4,7 +4,7 @@ services:
     db:
       build:
         context: ./pkg/db
-        dockerfile: ./pkg/db/db.dockerfile
+        dockerfile: db.dockerfile
       environment:
         POSTGRES_DB: admin
         POSTGRES_USER: admin
