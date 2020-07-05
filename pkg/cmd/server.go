@@ -30,45 +30,45 @@ func ListenGRPC(s service.Anywhat, port int) error {
 
 // GetAnything ...
 func (s *grpcServer) GetAnything(ctx context.Context, req *pb.GetAnythingRequest) (*pb.GetAnythingResponse, error) {
-	_, err := s.anywhat.GetAnything(ctx, req.Id)
+	a, err := s.anywhat.GetAnything(ctx, req.Id)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.GetAnythingResponse{}, nil
+	return &pb.GetAnythingResponse{Anything: a}, nil
 }
 
 // ListAnything ...
 func (s *grpcServer) ListAnything(ctx context.Context, _ *emptypb.Empty) (*pb.ListAnythingResponse, error) {
-	_, err := s.anywhat.ListAnything(ctx)
+	as, err := s.anywhat.ListAnything(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ListAnythingResponse{}, nil
+	return &pb.ListAnythingResponse{Anythings: as}, nil
 }
 
 // CreateAnything ...
 func (s *grpcServer) CreateAnything(ctx context.Context, req *pb.CreateAnythingRequest) (*pb.CreateAnythingResponse, error) {
-	_, err := s.anywhat.CreateAnything(ctx, req.Anything)
+	id, err := s.anywhat.CreateAnything(ctx, req.Anything)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.CreateAnythingResponse{}, nil
+	return &pb.CreateAnythingResponse{Id: id}, nil
 }
 
 // UpdateAnything ...
 func (s *grpcServer) UpdateAnything(ctx context.Context, req *pb.UpdateAnythingRequest) (*pb.UpdateAnythingResponse, error) {
-	_, err := s.anywhat.UpdateAnything(ctx, req.Anything)
+	success, err := s.anywhat.UpdateAnything(ctx, req.Anything)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.UpdateAnythingResponse{}, nil
+	return &pb.UpdateAnythingResponse{Updated: success}, nil
 }
 
 // DeleteAnything ...
 func (s *grpcServer) DeleteAnything(ctx context.Context, req *pb.DeleteAnythingRequest) (*pb.DeleteAnythingResponse, error) {
-	_, err := s.anywhat.DeleteAnything(ctx, req.Id)
+	success, err := s.anywhat.DeleteAnything(ctx, req.Id)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.DeleteAnythingResponse{}, nil
+	return &pb.DeleteAnythingResponse{Deleted: success}, nil
 }
