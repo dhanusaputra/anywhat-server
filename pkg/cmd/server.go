@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 	"net"
 
 	"github.com/dhanusaputra/anywhat-server/api/pb"
@@ -17,8 +16,8 @@ type grpcServer struct {
 }
 
 // ListenGRPC ...
-func ListenGRPC(s service.Anywhat, port int) error {
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+func ListenGRPC(s service.Anywhat, port string) error {
+	lis, err := net.Listen("tcp", ":"+port)
 	if err != nil {
 		return err
 	}

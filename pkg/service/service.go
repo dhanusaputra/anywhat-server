@@ -23,12 +23,11 @@ type anywhatService struct {
 }
 
 // NewAnywhatService ...
-func NewAnywhatService() Anywhat {
-	return &anywhatService{}
+func NewAnywhatService(db *sql.DB) Anywhat {
+	return &anywhatService{db}
 }
 
 func (s *anywhatService) GetAnything(ctx context.Context, id string) (*pb.Anything, error) {
-	// get SQL connection from pool
 	c, err := s.connect(ctx)
 	if err != nil {
 		return nil, err
@@ -39,7 +38,6 @@ func (s *anywhatService) GetAnything(ctx context.Context, id string) (*pb.Anythi
 }
 
 func (s *anywhatService) ListAnything(ctx context.Context) ([]*pb.Anything, error) {
-	// get SQL connection from pool
 	c, err := s.connect(ctx)
 	if err != nil {
 		return nil, err
@@ -50,7 +48,6 @@ func (s *anywhatService) ListAnything(ctx context.Context) ([]*pb.Anything, erro
 }
 
 func (s *anywhatService) CreateAnything(ctx context.Context, anything *pb.Anything) (string, error) {
-	// get SQL connection from pool
 	c, err := s.connect(ctx)
 	if err != nil {
 		return "", err
@@ -61,7 +58,6 @@ func (s *anywhatService) CreateAnything(ctx context.Context, anything *pb.Anythi
 }
 
 func (s *anywhatService) UpdateAnything(ctx context.Context, anything *pb.Anything) (bool, error) {
-	// get SQL connection from pool
 	c, err := s.connect(ctx)
 	if err != nil {
 		return false, err
@@ -72,7 +68,6 @@ func (s *anywhatService) UpdateAnything(ctx context.Context, anything *pb.Anythi
 }
 
 func (s *anywhatService) DeleteAnything(ctx context.Context, id string) (bool, error) {
-	// get SQL connection from pool
 	c, err := s.connect(ctx)
 	if err != nil {
 		return false, err
@@ -82,7 +77,6 @@ func (s *anywhatService) DeleteAnything(ctx context.Context, id string) (bool, e
 	return false, nil
 }
 
-// connect returns SQL database connection from the pool
 func (s *anywhatService) connect(ctx context.Context) (*sql.Conn, error) {
 	c, err := s.db.Conn(ctx)
 	if err != nil {
