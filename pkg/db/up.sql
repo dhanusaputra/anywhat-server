@@ -1,8 +1,7 @@
 CREATE TABLE IF NOT EXISTS anywhat (
-  id VARCHAR(27) UNIQUE,
+  id SERIAL PRIMARY KEY,
   name VARCHAR(24) NOT NULL,
-  description VARCHAR(1024) DEFAULT NULL,
+  description TEXT DEFAULT NULL,
   createdAt timestamp NULL DEFAULT NULL,
-  updatedAt timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (id)
+  updatedAt timestamp NULL DEFAULT NULL
 );

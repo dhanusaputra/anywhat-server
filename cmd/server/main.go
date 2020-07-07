@@ -10,17 +10,17 @@ import (
 )
 
 const (
-	host     = "localhost"
-	port     = 12345
-	user     = "admin"
-	password = "123456"
-	dbname   = "anywhat"
+	host     = "db"
+	port     = 5432
+	user     = "postgres"
+	name     = "postgres"
+	password = "postgres"
 )
 
 func main() {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname)
+		"password=%s sslmode=disable",
+		host, port, user, password)
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		panic(err)

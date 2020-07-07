@@ -33,6 +33,7 @@ func main() {
 
 	req1 := pb.CreateAnythingRequest{
 		Anything: &pb.Anything{
+			Name:        "name",
 			Description: "description (" + pfx + ")",
 			CreatedAt:   tp,
 			UpdatedAt:   tp,

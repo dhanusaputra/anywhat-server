@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"database/sql"
+	"strconv"
 
 	"github.com/dhanusaputra/anywhat-server/api/pb"
 	"google.golang.org/grpc/codes"
@@ -54,7 +55,17 @@ func (s *anywhatService) CreateAnything(ctx context.Context, anything *pb.Anythi
 	}
 	defer c.Close()
 
-	return "", nil
+	res, err := c.ExecContext(ctx, "INSERT INTO anywhat(name, description) VALUES(?, ?)", anything.Name, anything.Description)
+	if err != nil {
+		return "", status.Errorf(codes.Unknown, "failed to insert into anything, err: %s", err.Error())
+	}
+
+	id, err := res.LastInsertId()
+	if err != nil {
+		return "", status.Errorf(codes.Unknown, "failed to retrieve id when created anything, err: %s", err.Error())
+	}
+
+	return strconv.FormatInt(id, 10), nil
 }
 
 func (s *anywhatService) UpdateAnything(ctx context.Context, anything *pb.Anything) (bool, error) {
