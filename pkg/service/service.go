@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/dhanusaputra/anywhat-server/api/pb"
+	"github.com/golang/protobuf/ptypes"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -42,23 +43,32 @@ func (s *anywhatService) Get(ctx context.Context, id string) (*pb.Anything, erro
 	}
 	defer rows.Close()
 
-	if !rows.Next() {
-		if err := rows.Err(); err != nil {
+	for !rows.Next() {
+		if rows.Err() != nil {
 			return nil, status.Errorf(codes.Unknown, "failed to retrieve data from anything, err: %s", err.Error())
 		}
 		return nil, status.Errorf(codes.NotFound, "anything with ID='%s' is not found", id)
 	}
 
-	var a *pb.Anything
-	if err := rows.Scan(&a.Id, &a.Name, &a.Description, &a.CreatedAt, &a.UpdatedAt); err != nil {
+	var a pb.Anything
+	var createdAt, updatedAt time.Time
+	if err := rows.Scan(&a.Id, &a.Name, &a.Description, &createdAt, &updatedAt); err != nil {
 		return nil, status.Errorf(codes.Unknown, "failed to retrieve field values from anything, err: %s", err.Error())
+	}
+	a.CreatedAt, err = ptypes.TimestampProto(createdAt)
+	if err != nil {
+		return nil, status.Errorf(codes.Unknown, "createdAt field has invalid format, err: %s", err.Error())
+	}
+	a.UpdatedAt, err = ptypes.TimestampProto(updatedAt)
+	if err != nil {
+		return nil, status.Errorf(codes.Unknown, "updatedAt field has invalid format, err: %s", err.Error())
 	}
 
 	if rows.Next() {
 		return nil, status.Errorf(codes.Unknown, "found multiple rows with ID='%s'", id)
 	}
 
-	return a, nil
+	return &a, nil
 }
 
 func (s *anywhatService) List(ctx context.Context) ([]*pb.Anything, error) {
