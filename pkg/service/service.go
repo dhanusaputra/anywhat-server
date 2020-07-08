@@ -58,7 +58,7 @@ func (s *anywhatService) Get(ctx context.Context, id string) (*pb.Anything, erro
 		return nil, status.Errorf(codes.Unknown, "found multiple rows with ID='%s'", id)
 	}
 
-	return nil, nil
+	return a, nil
 }
 
 func (s *anywhatService) List(ctx context.Context) ([]*pb.Anything, error) {
