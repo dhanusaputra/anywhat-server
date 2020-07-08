@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"strconv"
+	"time"
 
 	"github.com/dhanusaputra/anywhat-server/api/pb"
 	"google.golang.org/grpc/codes"
@@ -12,11 +13,11 @@ import (
 
 // Anywhat ...
 type Anywhat interface {
-	GetAnything(ctx context.Context, id string) (*pb.Anything, error)
-	ListAnything(ctx context.Context) ([]*pb.Anything, error)
-	CreateAnything(ctx context.Context, anything *pb.Anything) (string, error)
-	UpdateAnything(ctx context.Context, anything *pb.Anything) (bool, error)
-	DeleteAnything(ctx context.Context, id string) (bool, error)
+	Get(ctx context.Context, id string) (*pb.Anything, error)
+	List(ctx context.Context) ([]*pb.Anything, error)
+	Create(ctx context.Context, anything *pb.Anything) (string, error)
+	Update(ctx context.Context, anything *pb.Anything) (bool, error)
+	Delete(ctx context.Context, id string) (bool, error)
 }
 
 type anywhatService struct {
@@ -28,7 +29,39 @@ func NewAnywhatService(db *sql.DB) Anywhat {
 	return &anywhatService{db}
 }
 
-func (s *anywhatService) GetAnything(ctx context.Context, id string) (*pb.Anything, error) {
+func (s *anywhatService) Get(ctx context.Context, id string) (*pb.Anything, error) {
+	c, err := s.connect(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer c.Close()
+
+	rows, err := s.db.Query("SELECT id, name, description, created_at, updated_at FROM anywhat WHERE id=$1", id)
+	if err != nil {
+		return nil, status.Errorf(codes.Unknown, "failed to query anything, id: %s, err: %s", id, err.Error())
+	}
+	defer rows.Close()
+
+	if !rows.Next() {
+		if err := rows.Err(); err != nil {
+			return nil, status.Errorf(codes.Unknown, "failed to retrieve data from anything, err: %s", err.Error())
+		}
+		return nil, status.Errorf(codes.NotFound, "anything with ID='%s' is not found", id)
+	}
+
+	var a *pb.Anything
+	if err := rows.Scan(&a.Id, &a.Name, &a.Description, &a.CreatedAt, &a.UpdatedAt); err != nil {
+		return nil, status.Errorf(codes.Unknown, "failed to retrieve field values from anything, err: %s", err.Error())
+	}
+
+	if rows.Next() {
+		return nil, status.Errorf(codes.Unknown, "found multiple rows with ID='%s'", id)
+	}
+
+	return nil, nil
+}
+
+func (s *anywhatService) List(ctx context.Context) ([]*pb.Anything, error) {
 	c, err := s.connect(ctx)
 	if err != nil {
 		return nil, err
@@ -38,37 +71,25 @@ func (s *anywhatService) GetAnything(ctx context.Context, id string) (*pb.Anythi
 	return nil, nil
 }
 
-func (s *anywhatService) ListAnything(ctx context.Context) ([]*pb.Anything, error) {
-	c, err := s.connect(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer c.Close()
-
-	return nil, nil
-}
-
-func (s *anywhatService) CreateAnything(ctx context.Context, anything *pb.Anything) (string, error) {
+func (s *anywhatService) Create(ctx context.Context, anything *pb.Anything) (string, error) {
 	c, err := s.connect(ctx)
 	if err != nil {
 		return "", err
 	}
 	defer c.Close()
 
-	res, err := c.ExecContext(ctx, "INSERT INTO anywhat(name, description) VALUES(?, ?)", anything.Name, anything.Description)
+	now := time.Now().In(time.UTC)
+
+	var id int
+	err = s.db.QueryRow("INSERT INTO anywhat(name,description,created_at,updated_at) VALUES($1,$2,$3,$4) returning id;", anything.Name, anything.Description, now, now).Scan(&id)
 	if err != nil {
 		return "", status.Errorf(codes.Unknown, "failed to insert into anything, err: %s", err.Error())
 	}
 
-	id, err := res.LastInsertId()
-	if err != nil {
-		return "", status.Errorf(codes.Unknown, "failed to retrieve id when created anything, err: %s", err.Error())
-	}
-
-	return strconv.FormatInt(id, 10), nil
+	return strconv.Itoa(id), nil
 }
 
-func (s *anywhatService) UpdateAnything(ctx context.Context, anything *pb.Anything) (bool, error) {
+func (s *anywhatService) Update(ctx context.Context, anything *pb.Anything) (bool, error) {
 	c, err := s.connect(ctx)
 	if err != nil {
 		return false, err
@@ -78,7 +99,7 @@ func (s *anywhatService) UpdateAnything(ctx context.Context, anything *pb.Anythi
 	return false, nil
 }
 
-func (s *anywhatService) DeleteAnything(ctx context.Context, id string) (bool, error) {
+func (s *anywhatService) Delete(ctx context.Context, id string) (bool, error) {
 	c, err := s.connect(ctx)
 	if err != nil {
 		return false, err
