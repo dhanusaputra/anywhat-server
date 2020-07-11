@@ -67,19 +67,6 @@ func TestGet(t *testing.T) {
 			},
 		},
 		{
-			name: "select failed",
-			s:    s,
-			args: args{
-				ctx: ctx,
-				id:  "1",
-			},
-			mock: func() {
-				mock.ExpectQuery("SELECT (.+) FROM ToDo").WithArgs("1").
-					WillReturnError(errors.New("err"))
-			},
-			wantErr: true,
-		},
-		{
 			name: "not found",
 			s:    s,
 			args: args{
@@ -104,6 +91,19 @@ func TestGet(t *testing.T) {
 					AddRow("1", "name", "description", now, now).
 					AddRow("1", "name", "description", now, now)
 				mock.ExpectQuery("SELECT (.+) FROM anywhat").WithArgs("1").WillReturnRows(rows)
+			},
+			wantErr: true,
+		},
+		{
+			name: "select failed",
+			s:    s,
+			args: args{
+				ctx: ctx,
+				id:  "1",
+			},
+			mock: func() {
+				mock.ExpectQuery("SELECT (.+) FROM ToDo").
+					WillReturnError(errors.New("err"))
 			},
 			wantErr: true,
 		},
@@ -192,6 +192,17 @@ func TestList(t *testing.T) {
 				mock.ExpectQuery("SELECT (.+) FROM anywhat").WillReturnRows(rows)
 			},
 			want: []*pb.Anything{},
+		},
+		{
+			name: "query failed",
+			s:    s,
+			args: args{
+				ctx: ctx,
+			},
+			mock: func() {
+				mock.ExpectQuery("SELECT (.+) FROM anywhat").WillReturnError(errors.New("err"))
+			},
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
