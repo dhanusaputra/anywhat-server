@@ -9,8 +9,6 @@ services:
       - "db"
     environment:
       DATABASE_URL: "postgres://postgres:postgres@db/anywhat?sslmode=disable"
-    ports:
-      - "8080:8080"
     restart: "on-failure"
 
   db:
@@ -21,8 +19,6 @@ services:
       POSTGRES_DB: "postgres"
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
-    ports:
-      - "5432:5432"
     restart: "unless-stopped"
 
   graphql:
