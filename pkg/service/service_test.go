@@ -95,7 +95,7 @@ func TestGet(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "select failed",
+			name: "query failed",
 			s:    s,
 			args: args{
 				ctx: ctx,
