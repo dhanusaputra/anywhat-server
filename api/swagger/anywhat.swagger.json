@@ -1,0 +1,122 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "anywhat.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "pbAnything": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "Anything ..."
+    },
+    "pbCreateAnythingResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "description": "CreateAnythingResponse ..."
+    },
+    "pbDeleteAnythingResponse": {
+      "type": "object",
+      "properties": {
+        "deleted": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      },
+      "description": "DeleteAnythingResponse ..."
+    },
+    "pbGetAnythingResponse": {
+      "type": "object",
+      "properties": {
+        "Anything": {
+          "$ref": "#/definitions/pbAnything"
+        }
+      },
+      "description": "GetAnythingResponse ..."
+    },
+    "pbListAnythingResponse": {
+      "type": "object",
+      "properties": {
+        "Anythings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/pbAnything"
+          }
+        }
+      },
+      "description": "ListAnythingResponse ..."
+    },
+    "pbUpdateAnythingResponse": {
+      "type": "object",
+      "properties": {
+        "updated": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      },
+      "description": "UpdateAnythingResponse ..."
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "runtimeError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}
