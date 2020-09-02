@@ -7,15 +7,17 @@ import (
 
 	"github.com/dhanusaputra/anywhat-server/pkg/cmd"
 	"github.com/dhanusaputra/anywhat-server/pkg/service"
+	"github.com/dhanusaputra/anywhat-server/util/envutil"
+	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/lib/pq"
 )
 
-const (
-	host     = "db"
-	port     = 5432
-	user     = "postgres"
-	name     = "postgres"
-	password = "postgres"
+var (
+	host     = envutil.GetEnv("HOST", "")
+	port     = envutil.GetEnvAsInt("PORT", 0)
+	user     = envutil.GetEnv("USER", "")
+	name     = envutil.GetEnv("NAME", "")
+	password = envutil.GetEnv("PASSWORD", "")
 )
 
 func main() {

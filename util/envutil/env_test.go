@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dhanusaputra/somewhat-server/util/testutil"
+	"github.com/dhanusaputra/anywhat-server/util/testutil"
 )
 
 func TestGetEnv(t *testing.T) {
