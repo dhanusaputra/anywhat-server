@@ -1,0 +1,79 @@
+syntax = "proto3";
+package pb;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = ".;pb";
+
+// UserService ...
+service UserService {
+    // Login ...
+    rpc Login (google.protobuf.Empty) returns (LoginResponse){}
+    // Me ...
+    rpc Me (google.protobuf.Empty) returns (MeResponse){}
+    // CreateUser ...
+    rpc CreateUser (CreateUserRequest) returns (CreateUserResponse){}
+    // UpdateUser ...
+    rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse){}
+    // DeleteUser ...
+    rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse){}
+    // ListUser ...
+    rpc ListUser (google.protobuf.Empty) returns (ListUserResponse){}
+}
+
+// User ...
+message User {
+    string id = 1;
+    string username = 2;
+    string password = 3;
+    string passwordHash = 4;
+    google.protobuf.Timestamp createdAt = 5;
+    google.protobuf.Timestamp lastLoginAt = 6;
+}
+
+// MeRequest ...
+message MeRequest {
+    string api = 1;
+}
+
+// MeResponse ...
+message MeResponse {
+    User user =1;
+}
+
+// UpdateAnythingRequest ...
+message UpdateAnythingRequest {
+    Anything Anything = 1;
+}
+
+// UpdateAnythingResponse ...
+message UpdateAnythingResponse{
+    bool updated = 1;
+}
+
+// CreateAnythingRequest ...
+message CreateAnythingRequest {
+    Anything Anything = 1;
+}
+
+// CreateAnythingResponse ...
+message CreateAnythingResponse{
+    string id = 1;
+}
+
+// DeleteAnythingRequest ...
+message DeleteAnythingRequest {
+    string id = 1;
+}
+
+// DeleteAnythingResponse ...
+message DeleteAnythingResponse{
+    bool deleted = 1;
+}
+
+// ListAnythingResponse ...
+message ListAnythingResponse{
+    repeated Anything Anythings = 1;
+}
+
