@@ -32,48 +32,47 @@ message User {
     google.protobuf.Timestamp lastLoginAt = 6;
 }
 
-// MeRequest ...
-message MeRequest {
-    string api = 1;
+message LoginResponse{
+    string token = 1;
 }
 
 // MeResponse ...
 message MeResponse {
-    User user =1;
+    User user = 1;
 }
 
-// UpdateAnythingRequest ...
-message UpdateAnythingRequest {
-    Anything Anything = 1;
+// UpdateUserRequest ...
+message UpdateUserRequest {
+    User user = 1;
 }
 
-// UpdateAnythingResponse ...
-message UpdateAnythingResponse{
+// UpdateUserResponse ...
+message UpdateUserResponse{
     bool updated = 1;
 }
 
-// CreateAnythingRequest ...
-message CreateAnythingRequest {
-    Anything Anything = 1;
+// CreateUserRequest ...
+message CreateUserRequest {
+    User user = 1;
 }
 
-// CreateAnythingResponse ...
-message CreateAnythingResponse{
+// CreateUserResponse ...
+message CreateUserResponse{
     string id = 1;
 }
 
-// DeleteAnythingRequest ...
-message DeleteAnythingRequest {
+// DeleteUserRequest ...
+message DeleteUserRequest {
     string id = 1;
 }
 
-// DeleteAnythingResponse ...
-message DeleteAnythingResponse{
+// DeleteUserResponse ...
+message DeleteUserResponse{
     bool deleted = 1;
 }
 
-// ListAnythingResponse ...
-message ListAnythingResponse{
-    repeated Anything Anythings = 1;
+// ListUserResponse ...
+message ListUserResponse{
+    repeated User users = 1;
 }
 
