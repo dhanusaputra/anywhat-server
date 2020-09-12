@@ -18,7 +18,7 @@ RUN go mod download
 COPY . .
 
 # Build the application
-RUN go build -o main ./cmd/server
+RUN go build -o main ./cmd/server/anywhat
 
 # Move to /dist directory as the place for resulting binary folder
 WORKDIR /dist
