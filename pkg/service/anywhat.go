@@ -41,7 +41,7 @@ func (s *anywhatService) Get(ctx context.Context, id string) (*pb.Anything, erro
 		if rows.Err() != nil {
 			return nil, status.Errorf(codes.Unknown, "failed to retrieve data from anything, err: %s", err.Error())
 		}
-		return nil, status.Errorf(codes.NotFound, "anything with ID='%s' is not found", id)
+		return nil, status.Errorf(codes.NotFound, "anything with ID: '%s' is not found", id)
 	}
 
 	var a *pb.Anything
@@ -59,7 +59,7 @@ func (s *anywhatService) Get(ctx context.Context, id string) (*pb.Anything, erro
 	}
 
 	if rows.Next() {
-		return nil, status.Errorf(codes.Unknown, "found multiple rows with ID='%s'", id)
+		return nil, status.Errorf(codes.Unknown, "found multiple rows with ID: '%s'", id)
 	}
 
 	return a, nil
@@ -126,7 +126,7 @@ func (s *anywhatService) Update(ctx context.Context, anything *pb.Anything) (boo
 	}
 
 	if rows == 0 {
-		return false, status.Errorf(codes.NotFound, "anywhat with ID='%s' is not found", anything.Id)
+		return false, status.Errorf(codes.NotFound, "anywhat with ID: '%s' is not found", anything.Id)
 	}
 
 	return true, nil
@@ -149,7 +149,7 @@ func (s *anywhatService) Delete(ctx context.Context, id string) (bool, error) {
 	}
 
 	if rows == 0 {
-		return false, status.Errorf(codes.NotFound, "anywhat with ID='%s' is not found", id)
+		return false, status.Errorf(codes.NotFound, "anywhat with ID: '%s' is not found", id)
 	}
 
 	return true, nil
