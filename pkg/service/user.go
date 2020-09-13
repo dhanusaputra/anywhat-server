@@ -45,7 +45,7 @@ func (s *userService) Login(ctx context.Context, username, password string) (str
 		return "", status.Errorf(codes.NotFound, "user_account with username: '%s' is not found", username)
 	}
 
-	var u *pb.User
+	var u pb.User
 	if err := rows.Scan(&u.Id, &u.Username, &u.PasswordHash); err != nil {
 		return "", status.Errorf(codes.Unknown, "failed to retrieve field values from user_account, err: %s", err.Error())
 	}

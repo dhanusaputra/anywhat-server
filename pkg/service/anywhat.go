@@ -44,7 +44,7 @@ func (s *anywhatService) Get(ctx context.Context, id string) (*pb.Anything, erro
 		return nil, status.Errorf(codes.NotFound, "anything with ID: '%s' is not found", id)
 	}
 
-	var a *pb.Anything
+	var a pb.Anything
 	var createdAt, updatedAt time.Time
 	if err := rows.Scan(&a.Id, &a.Name, &a.Description, &createdAt, &updatedAt); err != nil {
 		return nil, status.Errorf(codes.Unknown, "failed to retrieve field values from anything, err: %s", err.Error())
@@ -62,7 +62,7 @@ func (s *anywhatService) Get(ctx context.Context, id string) (*pb.Anything, erro
 		return nil, status.Errorf(codes.Unknown, "found multiple rows with ID: '%s'", id)
 	}
 
-	return a, nil
+	return &a, nil
 }
 
 func (s *anywhatService) List(ctx context.Context) ([]*pb.Anything, error) {
