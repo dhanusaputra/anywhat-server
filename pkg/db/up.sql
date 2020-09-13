@@ -15,4 +15,4 @@ CREATE TABLE IF NOT EXISTS user_account (
 );
 
 INSERT INTO user_account(username, passwordHash)
-VALUES ("admin", "admin");
+VALUES ('admin', 'admin');
