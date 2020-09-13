@@ -32,7 +32,7 @@ func (s *userService) Login(ctx context.Context, username, password string) (str
 		return "", status.Error(codes.InvalidArgument, "username and pasword are required")
 	}
 
-	rows, err := s.db.Query("SELECT id, username, password_hash FROM user_account WHERE user_name=$1", username)
+	rows, err := s.db.Query("SELECT id, username, password_hash FROM user_account WHERE username=$1", username)
 	if err != nil {
 		return "", status.Errorf(codes.Unknown, "failed to query user_account, username: %s, err: %s", username, err.Error())
 	}
