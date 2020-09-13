@@ -42,7 +42,7 @@ func (s *userService) Login(ctx context.Context, username, password string) (str
 		if rows.Err() != nil {
 			return "", status.Errorf(codes.Unknown, "failed to retrieve data from user_account, err: %s", err.Error())
 		}
-		return "", status.Errorf(codes.NotFound, "user_account with username='%s' is not found", username)
+		return "", status.Errorf(codes.NotFound, "user_account with username: '%s' is not found", username)
 	}
 
 	var u *pb.User
@@ -51,13 +51,14 @@ func (s *userService) Login(ctx context.Context, username, password string) (str
 	}
 
 	if rows.Next() {
-		return "", status.Errorf(codes.Unknown, "found multiple rows with username='%s'", username)
+		return "", status.Errorf(codes.Unknown, "found multiple rows with username: '%s'", username)
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(password))
 	if err != nil {
 		return "", status.Error(codes.PermissionDenied, fmt.Sprintf("failed to login, err: %v", err))
 	}
+
 	token, err := authutil.SignJWT(&pb.User{
 		Id:       u.Id,
 		Username: u.Username,
@@ -70,5 +71,5 @@ func (s *userService) Login(ctx context.Context, username, password string) (str
 }
 
 func (s *userService) Me(ctx context.Context) (*pb.User, error) {
-	return nil, nil
+	return nil, status.Error(codes.Unimplemented, "")
 }
