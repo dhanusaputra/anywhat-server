@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS anywhat (
 CREATE TABLE IF NOT EXISTS user_account (
   id SERIAL PRIMARY KEY,
   username TEXT NOT NULL,
-  passwordHash TEXT NOT NULL,
+  password_hash TEXT NOT NULL,
   created_at timestamp NULL DEFAULT NULL,
   updated_at timestamp NULL DEFAULT NULL
 );
