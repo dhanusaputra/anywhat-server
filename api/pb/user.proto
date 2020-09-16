@@ -12,14 +12,6 @@ service UserService {
     rpc Login (LoginRequest) returns (LoginResponse){}
     // Me ...
     rpc Me (google.protobuf.Empty) returns (MeResponse){}
-    // CreateUser ...
-    rpc CreateUser (CreateUserRequest) returns (CreateUserResponse){}
-    // UpdateUser ...
-    rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse){}
-    // DeleteUser ...
-    rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse){}
-    // ListUser ...
-    rpc ListUser (google.protobuf.Empty) returns (ListUserResponse){}
 }
 
 // User ...
@@ -45,39 +37,3 @@ message LoginResponse{
 message MeResponse {
     User user = 1;
 }
-
-// UpdateUserRequest ...
-message UpdateUserRequest {
-    User user = 1;
-}
-
-// UpdateUserResponse ...
-message UpdateUserResponse{
-    bool updated = 1;
-}
-
-// CreateUserRequest ...
-message CreateUserRequest {
-    User user = 1;
-}
-
-// CreateUserResponse ...
-message CreateUserResponse{
-    string id = 1;
-}
-
-// DeleteUserRequest ...
-message DeleteUserRequest {
-    string id = 1;
-}
-
-// DeleteUserResponse ...
-message DeleteUserResponse{
-    bool deleted = 1;
-}
-
-// ListUserResponse ...
-message ListUserResponse{
-    repeated User users = 1;
-}
-

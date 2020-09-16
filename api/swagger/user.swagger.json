@@ -12,37 +12,6 @@
   ],
   "paths": {},
   "definitions": {
-    "pbCreateUserResponse": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        }
-      },
-      "description": "CreateUserResponse ..."
-    },
-    "pbDeleteUserResponse": {
-      "type": "object",
-      "properties": {
-        "deleted": {
-          "type": "boolean",
-          "format": "boolean"
-        }
-      },
-      "description": "DeleteUserResponse ..."
-    },
-    "pbListUserResponse": {
-      "type": "object",
-      "properties": {
-        "users": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/pbUser"
-          }
-        }
-      },
-      "description": "ListUserResponse ..."
-    },
     "pbLoginResponse": {
       "type": "object",
       "properties": {
@@ -59,16 +28,6 @@
         }
       },
       "description": "MeResponse ..."
-    },
-    "pbUpdateUserResponse": {
-      "type": "object",
-      "properties": {
-        "updated": {
-          "type": "boolean",
-          "format": "boolean"
-        }
-      },
-      "description": "UpdateUserResponse ..."
     },
     "pbUser": {
       "type": "object",

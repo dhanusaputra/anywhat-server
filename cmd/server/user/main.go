@@ -5,7 +5,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/dhanusaputra/anywhat-server/pkg/cmd/anywhat"
+	usercmd "github.com/dhanusaputra/anywhat-server/pkg/cmd/user"
 	"github.com/dhanusaputra/anywhat-server/pkg/service"
 	"github.com/dhanusaputra/anywhat-server/util/envutil"
 	_ "github.com/joho/godotenv/autoload"
@@ -21,8 +21,8 @@ var (
 )
 
 func main() {
-	var cfg anywhat.Config
-	flag.StringVar(&cfg.GRPCPort, "grpc-port", "9090", "gRPC port to bind")
+	var cfg usercmd.Config
+	flag.StringVar(&cfg.GRPCPort, "grpc-port", "9091", "gRPC port to bind")
 	flag.IntVar(&cfg.LogLevel, "log-level", -1, "Global log level")
 	flag.StringVar(&cfg.LogTimeFormat, "log-time-format", "2006-01-02T15:04:05.999999999Z07:00", "Print time format for logger e.g. 006-01-02T15:04:05Z07:00")
 	flag.Parse()
@@ -36,8 +36,8 @@ func main() {
 	}
 	defer db.Close()
 
-	s := service.NewAnywhatService(db)
-	if err := anywhat.ListenGRPC(s, cfg); err != nil {
+	s := service.NewUserService(db)
+	if err := usercmd.ListenGRPC(s, cfg); err != nil {
 		panic(err)
 	}
 }
