@@ -2,7 +2,6 @@ package user
 
 import (
 	"context"
-	"fmt"
 	"net"
 
 	"go.uber.org/zap"
@@ -37,10 +36,6 @@ func ListenGRPC(s service.User, cfg Config) error {
 	lis, err := net.Listen("tcp", ":"+cfg.GRPCPort)
 	if err != nil {
 		return err
-	}
-	// initialize logger
-	if err := logger.Init(cfg.LogLevel, cfg.LogTimeFormat); err != nil {
-		return fmt.Errorf("failed to initialize logger: %v", err)
 	}
 	serv := grpc.NewServer()
 	pb.RegisterUserServiceServer(serv, &grpcServer{s})

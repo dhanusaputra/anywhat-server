@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	usercmd "github.com/dhanusaputra/anywhat-server/pkg/cmd/user"
+	"github.com/dhanusaputra/anywhat-server/pkg/logger"
 	"github.com/dhanusaputra/anywhat-server/pkg/service"
 	"github.com/dhanusaputra/anywhat-server/util/envutil"
 	_ "github.com/joho/godotenv/autoload"
@@ -35,6 +36,11 @@ func main() {
 		panic(err)
 	}
 	defer db.Close()
+
+	// initialize logger
+	if err := logger.Init(cfg.LogLevel, cfg.LogTimeFormat); err != nil {
+		panic(err)
+	}
 
 	s := service.NewUserService(db)
 	if err := usercmd.ListenGRPC(s, cfg); err != nil {

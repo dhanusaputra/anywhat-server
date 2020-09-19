@@ -10,7 +10,9 @@ services:
     environment:
       DATABASE_URL: "postgres://postgres:postgres@db/anywhat?sslmode=disable"
     ports:
-      - "8080:8080"
+      - "9090:9090"
+    env_file:
+      - .env
     restart: "on-failure"
 
   user_server:
@@ -22,7 +24,9 @@ services:
     environment:
       DATABASE_URL: "postgres://postgres:postgres@db/user?sslmode=disable"
     ports:
-      - "8081:8081"
+      - "9091:9091"
+    env_file:
+      - .env
     restart: "on-failure"
 
   db:
@@ -43,6 +47,6 @@ services:
       - "anywhat_server"
       - "user_server"
     ports:
-      - "9090:9090"
+      - "9092:9092"
     restart: "on-failure"
   
