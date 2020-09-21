@@ -9,6 +9,7 @@ import (
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 )
 
 func main() {
@@ -102,6 +103,9 @@ func main() {
 		log.Fatalf("Login failed : %v", err)
 	}
 	log.Printf("Login result: <%+v>\n\n", res6)
+
+	md := metadata.New(map[string]string{"authorization": res6.Token})
+	ctx = metadata.NewIncomingContext(context.Background(), md)
 
 	res7, err := c2.Me(ctx, new(empty.Empty))
 	if err != nil {

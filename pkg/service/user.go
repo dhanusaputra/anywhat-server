@@ -78,7 +78,7 @@ func (s *userService) Me(ctx context.Context) (*pb.User, error) {
 		return nil, status.Error(codes.Unknown, "metadata is required")
 	}
 	auth := md.Get("authorization")
-	if len(auth[0]) == 0 {
+	if len(auth) == 0 || len(auth[0]) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "authorization is required")
 	}
 	_, claims, err := authutil.ValidateJWT(auth[0])
