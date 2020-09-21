@@ -84,4 +84,28 @@ func main() {
 		log.Fatalf("DeleteAnything failed: %v", err)
 	}
 	log.Printf("DeleteAnything result: <%+v>\n\n", res5)
+
+	conn2, err := grpc.Dial("localhost:9091", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn2.Close()
+
+	c2 := pb.NewUserServiceClient(conn2)
+
+	req6 := pb.LoginRequest{
+		Username: "admin",
+		Password: "admin",
+	}
+	res6, err := c2.Login(ctx, &req6)
+	if err != nil {
+		log.Fatalf("Login failed : %v", err)
+	}
+	log.Printf("Login result: <%+v>\n\n", res6)
+
+	res7, err := c2.Me(ctx, new(empty.Empty))
+	if err != nil {
+		log.Fatalf("Me failed : %v", err)
+	}
+	log.Printf("Me result: <%+v>\n\n", res7)
 }
