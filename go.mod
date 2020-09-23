@@ -8,9 +8,9 @@ require (
 	github.com/golang/protobuf v1.4.2
 	github.com/google/go-cmp v0.5.1 // indirect
 	github.com/graph-gophers/graphql-go v0.0.0-20200622220639-c1d9693c95a6
+	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/joho/godotenv v1.3.0
 	github.com/lib/pq v1.7.0
-	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/stretchr/testify v1.6.1
 	go.uber.org/zap v1.15.0
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
