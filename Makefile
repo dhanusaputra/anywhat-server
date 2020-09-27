@@ -7,4 +7,7 @@ proto: ## generate proto
 mock: ## generate mocks from mockery
 	mockery --all
 
+gqlgen: ## generate gqlgen
+	go run github.com/99designs/gqlgen generate
+
 .DEFAULT_GOAL := help
