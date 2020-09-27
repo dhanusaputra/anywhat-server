@@ -14,9 +14,11 @@ import (
 	_ "github.com/lib/pq"
 )
 
+const defaultDBPort = 5432
+
 var (
 	host     = envutil.GetEnv("HOST", "")
-	port     = envutil.GetEnvAsInt("PORT", 0)
+	port     = envutil.GetEnvAsInt("PORT", defaultDBPort)
 	user     = envutil.GetEnv("USER", "")
 	name     = envutil.GetEnv("NAME", "")
 	password = envutil.GetEnv("PASSWORD", "")
