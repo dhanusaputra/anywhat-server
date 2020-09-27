@@ -2,20 +2,31 @@ package main
 
 import (
 	"context"
-	"log"
+	"flag"
 	"time"
 
 	"github.com/dhanusaputra/anywhat-server/api/pb"
+	"github.com/dhanusaputra/anywhat-server/pkg/cmd"
+	"github.com/dhanusaputra/anywhat-server/pkg/logger"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/empty"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
 
 func main() {
+	var cfg cmd.Config
+	flag.IntVar(&cfg.LogLevel, "log-level", -1, "Global log level")
+	flag.StringVar(&cfg.LogTimeFormat, "log-time-format", "2006-01-02T15:04:05.999999999Z07:00", "Print time format for logger e.g. 006-01-02T15:04:05Z07:00")
+	// initialize logger
+	if err := logger.Init(cfg.LogLevel, cfg.LogTimeFormat); err != nil {
+		panic(err)
+	}
+
 	conn, err := grpc.Dial("localhost:9090", grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		logger.Log.Fatal("did not connect", zap.Error(err))
 	}
 	defer conn.Close()
 
@@ -27,7 +38,7 @@ func main() {
 	t := time.Now().In(time.UTC)
 	tp, err := ptypes.TimestampProto(t)
 	if err != nil {
-		log.Fatalf(err.Error())
+		logger.Log.Fatal(err.Error())
 	}
 
 	pfx := t.Format(time.RFC3339Nano)
@@ -42,9 +53,9 @@ func main() {
 	}
 	res1, err := c.CreateAnything(ctx, &req1)
 	if err != nil {
-		log.Fatalf("CreateAnything failed: %v", err)
+		logger.Log.Fatal("CreateAnything failed", zap.Error(err))
 	}
-	log.Printf("CreateAnything result: <%+v>\n\n", res1)
+	logger.Log.Info("CreateAnything result", zap.Any("res", res1))
 
 	id := res1.Id
 
@@ -53,9 +64,9 @@ func main() {
 	}
 	res2, err := c.GetAnything(ctx, &req2)
 	if err != nil {
-		log.Fatalf("GetAnything failed: %v", err)
+		logger.Log.Fatal("GetAnything failed", zap.Error(err))
 	}
-	log.Printf("GetAnything result: <%+v>\n\n", res2)
+	logger.Log.Info("GetAnything result", zap.Any("res", res2))
 
 	req3 := pb.UpdateAnythingRequest{
 		Anything: &pb.Anything{
@@ -67,28 +78,28 @@ func main() {
 	}
 	res3, err := c.UpdateAnything(ctx, &req3)
 	if err != nil {
-		log.Fatalf("UpdateAnything failed: %v", err)
+		logger.Log.Fatal("UpdateAnything failed", zap.Error(err))
 	}
-	log.Printf("UpdateAnything result: <%+v>\n\n", res3)
+	logger.Log.Info("UpdateAnything result", zap.Any("res", res3))
 
 	res4, err := c.ListAnything(ctx, new(empty.Empty))
 	if err != nil {
-		log.Fatalf("ListAnything failed: %v", err)
+		logger.Log.Fatal("ListAnything failed", zap.Error(err))
 	}
-	log.Printf("ListAnything result: <%+v>\n\n", res4)
+	logger.Log.Info("ListAnything result", zap.Any("res", res4))
 
 	req5 := pb.DeleteAnythingRequest{
 		Id: id,
 	}
 	res5, err := c.DeleteAnything(ctx, &req5)
 	if err != nil {
-		log.Fatalf("DeleteAnything failed: %v", err)
+		logger.Log.Fatal("DeleteAnything failed", zap.Error(err))
 	}
-	log.Printf("DeleteAnything result: <%+v>\n\n", res5)
+	logger.Log.Info("DeleteAnything result", zap.Any("res", res5))
 
 	conn2, err := grpc.Dial("localhost:9091", grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		logger.Log.Fatal("did not connect", zap.Error(err))
 	}
 	defer conn2.Close()
 
@@ -100,16 +111,16 @@ func main() {
 	}
 	res6, err := c2.Login(ctx, &req6)
 	if err != nil {
-		log.Fatalf("Login failed : %v", err)
+		logger.Log.Fatal("Login failed", zap.Error(err))
 	}
-	log.Printf("Login result: <%+v>\n\n", res6)
+	logger.Log.Info("Login result", zap.Any("res", res6))
 
 	md := metadata.New(map[string]string{"authorization": res6.Token})
 	ctx = metadata.NewOutgoingContext(context.Background(), md)
 
 	res7, err := c2.Me(ctx, new(empty.Empty))
 	if err != nil {
-		log.Fatalf("Me failed : %v", err)
+		logger.Log.Fatal("Me failed", zap.Error(err))
 	}
-	log.Printf("Me result: <%+v>\n\n", res7)
+	logger.Log.Info("Me result", zap.Any("res", res7))
 }

@@ -7,6 +7,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/dhanusaputra/anywhat-server/api/pb"
+	"github.com/dhanusaputra/anywhat-server/pkg/cmd"
 	"github.com/dhanusaputra/anywhat-server/pkg/logger"
 	"github.com/dhanusaputra/anywhat-server/pkg/middleware"
 	"github.com/dhanusaputra/anywhat-server/pkg/service"
@@ -19,21 +20,8 @@ type grpcServer struct {
 	user service.User
 }
 
-// Config is configuration for Server
-type Config struct {
-	// gRPC server start parameters section
-	// gRPC is TCP port to listen by gRPC server
-	GRPCPort string
-
-	// Log parameters section
-	// LogLevel is global log level: Debug(-1), Info(0), Warn(1), Error(2), DPanic(3), Panic(4), Fatal(5)
-	LogLevel int
-	// LogTimeFormat is print time format for logger e.g. 2006-01-02T15:04:05Z07:00
-	LogTimeFormat string
-}
-
 // ListenGRPC ...
-func ListenGRPC(s service.User, cfg Config) error {
+func ListenGRPC(s service.User, cfg cmd.Config) error {
 	lis, err := net.Listen("tcp", ":"+cfg.GRPCPort)
 	if err != nil {
 		return err
