@@ -39,10 +39,10 @@ services:
       POSTGRES_PASSWORD: "postgres"
     restart: "unless-stopped"
 
-  graphql:
+  graph:
     build:
       context: "."
-      dockerfile: "./cmd/graphql/app.dockerfile"
+      dockerfile: "./cmd/graph/app.dockerfile"
     depends_on:
       - "anywhat_server"
       - "user_server"
