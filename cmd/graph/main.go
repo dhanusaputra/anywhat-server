@@ -7,14 +7,14 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/dhanusaputra/anywhat-server/api/pb"
 	"github.com/dhanusaputra/anywhat-server/pkg/cmd"
+	"github.com/dhanusaputra/anywhat-server/pkg/cmd/anywhat"
+	"github.com/dhanusaputra/anywhat-server/pkg/cmd/user"
 	"github.com/dhanusaputra/anywhat-server/pkg/graph"
 	"github.com/dhanusaputra/anywhat-server/pkg/graph/generated"
 	"github.com/dhanusaputra/anywhat-server/pkg/logger"
 	"github.com/dhanusaputra/anywhat-server/util/envutil"
 	"go.uber.org/zap"
-	"google.golang.org/grpc"
 )
 
 const defaultPort = "3000"
@@ -30,21 +30,14 @@ func main() {
 
 	port := envutil.GetEnv("GQL_PORT", defaultPort)
 
-	connA, err := grpc.Dial("localhost:9090", grpc.WithInsecure())
-	if err != nil {
-		logger.Log.Fatal("did not connect", zap.Error(err))
-	}
-	defer connA.Close()
-	cA := pb.NewAnywhatClient(connA)
+	anywhatClient := anywhat.NewClient("localhost:9090")
+	userClient := user.NewClient("localhost:9091")
+	defer func() {
+		anywhatClient.Close()
+		userClient.Close()
+	}()
 
-	connU, err := grpc.Dial("localhost:9091", grpc.WithInsecure())
-	if err != nil {
-		logger.Log.Fatal("did not connect", zap.Error(err))
-	}
-	defer connU.Close()
-	cU := pb.NewUserServiceClient(connU)
-
-	resolver := graph.NewResolver(&cA, &cU)
+	resolver := graph.NewResolver(&anywhatClient.Service, &userClient.Service)
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: resolver}))
 

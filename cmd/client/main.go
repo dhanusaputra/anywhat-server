@@ -7,11 +7,12 @@ import (
 
 	"github.com/dhanusaputra/anywhat-server/api/pb"
 	"github.com/dhanusaputra/anywhat-server/pkg/cmd"
+	"github.com/dhanusaputra/anywhat-server/pkg/cmd/anywhat"
+	"github.com/dhanusaputra/anywhat-server/pkg/cmd/user"
 	"github.com/dhanusaputra/anywhat-server/pkg/logger"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/empty"
 	"go.uber.org/zap"
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
 
@@ -24,13 +25,12 @@ func main() {
 		panic(err)
 	}
 
-	conn, err := grpc.Dial("localhost:9090", grpc.WithInsecure())
-	if err != nil {
-		logger.Log.Fatal("did not connect", zap.Error(err))
-	}
-	defer conn.Close()
-
-	c := pb.NewAnywhatClient(conn)
+	anywhatClient := anywhat.NewClient("localhost:9090")
+	userClient := user.NewClient("localhost:9091")
+	defer func() {
+		anywhatClient.Close()
+		userClient.Close()
+	}()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -51,7 +51,7 @@ func main() {
 			UpdatedAt:   tp,
 		},
 	}
-	res1, err := c.CreateAnything(ctx, &req1)
+	res1, err := anywhatClient.Service.CreateAnything(ctx, &req1)
 	if err != nil {
 		logger.Log.Fatal("CreateAnything failed", zap.Error(err))
 	}
@@ -62,7 +62,7 @@ func main() {
 	req2 := pb.GetAnythingRequest{
 		Id: id,
 	}
-	res2, err := c.GetAnything(ctx, &req2)
+	res2, err := anywhatClient.Service.GetAnything(ctx, &req2)
 	if err != nil {
 		logger.Log.Fatal("GetAnything failed", zap.Error(err))
 	}
@@ -76,13 +76,13 @@ func main() {
 			UpdatedAt:   res2.Anything.UpdatedAt,
 		},
 	}
-	res3, err := c.UpdateAnything(ctx, &req3)
+	res3, err := anywhatClient.Service.UpdateAnything(ctx, &req3)
 	if err != nil {
 		logger.Log.Fatal("UpdateAnything failed", zap.Error(err))
 	}
 	logger.Log.Info("UpdateAnything result", zap.Any("res", res3))
 
-	res4, err := c.ListAnything(ctx, new(empty.Empty))
+	res4, err := anywhatClient.Service.ListAnything(ctx, new(empty.Empty))
 	if err != nil {
 		logger.Log.Fatal("ListAnything failed", zap.Error(err))
 	}
@@ -91,25 +91,17 @@ func main() {
 	req5 := pb.DeleteAnythingRequest{
 		Id: id,
 	}
-	res5, err := c.DeleteAnything(ctx, &req5)
+	res5, err := anywhatClient.Service.DeleteAnything(ctx, &req5)
 	if err != nil {
 		logger.Log.Fatal("DeleteAnything failed", zap.Error(err))
 	}
 	logger.Log.Info("DeleteAnything result", zap.Any("res", res5))
 
-	conn2, err := grpc.Dial("localhost:9091", grpc.WithInsecure())
-	if err != nil {
-		logger.Log.Fatal("did not connect", zap.Error(err))
-	}
-	defer conn2.Close()
-
-	c2 := pb.NewUserServiceClient(conn2)
-
 	req6 := pb.LoginRequest{
 		Username: "admin",
 		Password: "admin",
 	}
-	res6, err := c2.Login(ctx, &req6)
+	res6, err := userClient.Service.Login(ctx, &req6)
 	if err != nil {
 		logger.Log.Fatal("Login failed", zap.Error(err))
 	}
@@ -118,7 +110,7 @@ func main() {
 	md := metadata.New(map[string]string{"authorization": res6.Token})
 	ctx = metadata.NewOutgoingContext(context.Background(), md)
 
-	res7, err := c2.Me(ctx, new(empty.Empty))
+	res7, err := userClient.Service.Me(ctx, new(empty.Empty))
 	if err != nil {
 		logger.Log.Fatal("Me failed", zap.Error(err))
 	}
