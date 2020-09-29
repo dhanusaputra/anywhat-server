@@ -289,7 +289,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "pkg/graph/schema.graphqls", Input: `type Query {
+	{Name: "api/graph/schema.graphqls", Input: `type Query {
   getAnything: Anything!
   listAnything: [Anything!]!
   login(username: String!, password: String!): Token!
