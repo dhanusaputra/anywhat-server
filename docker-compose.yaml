@@ -47,6 +47,6 @@ services:
       - "anywhat_server"
       - "user_server"
     ports:
-      - "9092:9092"
+      - "3000:3000"
     restart: "on-failure"
   
