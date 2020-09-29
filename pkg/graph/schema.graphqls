@@ -1,22 +1,37 @@
 type Query {
-  anythings: [Anything!]!
+  getAnything: Anything!
+  listAnything: [Anything!]!
+  login(username: String!, password: String!): Token!
+  me: User
+}
+
+type Mutation {
+  createAnything(input: AnythingInput): String!
+  updateAnything(id: ID!, input: AnythingInput): Boolean!
+}
+
+input AnythingInput {
+  name: String!
+  description: String
+  createdAt: Timestamp
+  updatedAt: Timestamp
 }
 
 type Anything {
   id: ID!
   name: String!
-  description: String!
-  user: User!
-  createdAt: Timestamp!
-  updatedAt: Timestamp!
+  description: String
+  createdAt: Timestamp
+  updatedAt: Timestamp
 }
 
 type User {
   id: ID!
   username: String!
-  password: String!
-  createdAt: Timestamp!
-  lastLoginAt: Timestamp!
+  password: String
+  createdAt: Timestamp
+  lastLoginAt: Timestamp
 }
 
 scalar Timestamp
+scalar Token
