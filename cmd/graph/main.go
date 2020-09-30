@@ -37,7 +37,7 @@ func main() {
 		userClient.Close()
 	}()
 
-	resolver := graph.NewResolver(&anywhatClient.Service, &userClient.Service)
+	resolver := graph.NewResolver(anywhatClient.Service, userClient.Service)
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: resolver}))
 

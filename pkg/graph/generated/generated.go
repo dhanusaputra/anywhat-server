@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"sync"
 	"sync/atomic"
+	"time"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
@@ -57,7 +58,7 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		GetAnything  func(childComplexity int) int
+		GetAnything  func(childComplexity int, id string) int
 		ListAnything func(childComplexity int) int
 		Login        func(childComplexity int, username string, password string) int
 		Me           func(childComplexity int) int
@@ -77,7 +78,7 @@ type MutationResolver interface {
 	UpdateAnything(ctx context.Context, id string, input *model.AnythingInput) (bool, error)
 }
 type QueryResolver interface {
-	GetAnything(ctx context.Context) (*model.Anything, error)
+	GetAnything(ctx context.Context, id string) (*model.Anything, error)
 	ListAnything(ctx context.Context) ([]*model.Anything, error)
 	Login(ctx context.Context, username string, password string) (string, error)
 	Me(ctx context.Context) (*model.User, error)
@@ -162,7 +163,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		return e.complexity.Query.GetAnything(childComplexity), true
+		args, err := ec.field_Query_getAnything_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetAnything(childComplexity, args["id"].(string)), true
 
 	case "Query.listAnything":
 		if e.complexity.Query.ListAnything == nil {
@@ -290,9 +296,9 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 
 var sources = []*ast.Source{
 	{Name: "api/graph/schema.graphqls", Input: `type Query {
-  getAnything: Anything!
+  getAnything(id: ID!): Anything!
   listAnything: [Anything!]!
-  login(username: String!, password: String!): Token!
+  login(username: String!, password: String!): String!
   me: User
 }
 
@@ -304,28 +310,28 @@ type Mutation {
 input AnythingInput {
   name: String!
   description: String
-  createdAt: Timestamp
-  updatedAt: Timestamp
+  createdAt: Time
+  updatedAt: Time
 }
 
 type Anything {
   id: ID!
   name: String!
   description: String
-  createdAt: Timestamp
-  updatedAt: Timestamp
+  createdAt: Time
+  updatedAt: Time
 }
 
 type User {
   id: ID!
   username: String!
   password: String
-  createdAt: Timestamp
-  lastLoginAt: Timestamp
+  createdAt: Time
+  lastLoginAt: Time
 }
 
-scalar Timestamp
-scalar Token`, BuiltIn: false},
+scalar Time
+`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
@@ -384,6 +390,21 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getAnything_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -546,9 +567,9 @@ func (ec *executionContext) _Anything_description(ctx context.Context, field gra
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Anything_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.Anything) (ret graphql.Marshaler) {
@@ -578,9 +599,9 @@ func (ec *executionContext) _Anything_createdAt(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(time.Time)
 	fc.Result = res
-	return ec.marshalOTimestamp2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOTime2timeᚐTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Anything_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Anything) (ret graphql.Marshaler) {
@@ -610,9 +631,9 @@ func (ec *executionContext) _Anything_updatedAt(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(time.Time)
 	fc.Result = res
-	return ec.marshalOTimestamp2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOTime2timeᚐTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_createAnything(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -715,9 +736,16 @@ func (ec *executionContext) _Query_getAnything(ctx context.Context, field graphq
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_getAnything_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetAnything(rctx)
+		return ec.resolvers.Query().GetAnything(rctx, args["id"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -808,7 +836,7 @@ func (ec *executionContext) _Query_login(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNToken2string(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_me(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1043,9 +1071,9 @@ func (ec *executionContext) _User_createdAt(ctx context.Context, field graphql.C
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(time.Time)
 	fc.Result = res
-	return ec.marshalOTimestamp2string(ctx, field.Selections, res)
+	return ec.marshalOTime2timeᚐTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _User_lastLoginAt(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
@@ -1075,9 +1103,9 @@ func (ec *executionContext) _User_lastLoginAt(ctx context.Context, field graphql
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(time.Time)
 	fc.Result = res
-	return ec.marshalOTimestamp2string(ctx, field.Selections, res)
+	return ec.marshalOTime2timeᚐTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
@@ -2185,7 +2213,7 @@ func (ec *executionContext) unmarshalInputAnythingInput(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("description"))
-			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.Description, err = ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2193,7 +2221,7 @@ func (ec *executionContext) unmarshalInputAnythingInput(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAt"))
-			it.CreatedAt, err = ec.unmarshalOTimestamp2ᚖstring(ctx, v)
+			it.CreatedAt, err = ec.unmarshalOTime2timeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2201,7 +2229,7 @@ func (ec *executionContext) unmarshalInputAnythingInput(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAt"))
-			it.UpdatedAt, err = ec.unmarshalOTimestamp2ᚖstring(ctx, v)
+			it.UpdatedAt, err = ec.unmarshalOTime2timeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2755,21 +2783,6 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) unmarshalNToken2string(ctx context.Context, v interface{}) (string, error) {
-	res, err := graphql.UnmarshalString(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNToken2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	res := graphql.MarshalString(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-	}
-	return res
-}
-
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
 	return ec.___Directive(ctx, sel, &v)
 }
@@ -3055,28 +3068,13 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 	return graphql.MarshalString(*v)
 }
 
-func (ec *executionContext) unmarshalOTimestamp2string(ctx context.Context, v interface{}) (string, error) {
-	res, err := graphql.UnmarshalString(v)
+func (ec *executionContext) unmarshalOTime2timeᚐTime(ctx context.Context, v interface{}) (time.Time, error) {
+	res, err := graphql.UnmarshalTime(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOTimestamp2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	return graphql.MarshalString(v)
-}
-
-func (ec *executionContext) unmarshalOTimestamp2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalString(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOTimestamp2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return graphql.MarshalString(*v)
+func (ec *executionContext) marshalOTime2timeᚐTime(ctx context.Context, sel ast.SelectionSet, v time.Time) graphql.Marshaler {
+	return graphql.MarshalTime(v)
 }
 
 func (ec *executionContext) marshalOUser2ᚖgithubᚗcomᚋdhanusaputraᚋanywhatᚑserverᚋpkgᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {

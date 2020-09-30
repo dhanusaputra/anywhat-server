@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/dhanusaputra/anywhat-server/api/pb"
 	"github.com/dhanusaputra/anywhat-server/pkg/graph/generated"
 	"github.com/dhanusaputra/anywhat-server/pkg/graph/model"
 )
@@ -19,8 +20,18 @@ func (r *mutationResolver) UpdateAnything(ctx context.Context, id string, input 
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) GetAnything(ctx context.Context) (*model.Anything, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *queryResolver) GetAnything(ctx context.Context, id string) (*model.Anything, error) {
+	res, err := r.anywhatClient.GetAnything(ctx, &pb.GetAnythingRequest{Id: id})
+	if err != nil {
+		return nil, err
+	}
+	return &model.Anything{
+		ID:          res.Anything.Id,
+		Name:        res.Anything.Name,
+		Description: res.Anything.Description,
+		CreatedAt:   res.Anything.CreatedAt.AsTime(),
+		UpdatedAt:   res.Anything.UpdatedAt.AsTime(),
+	}, nil
 }
 
 func (r *queryResolver) ListAnything(ctx context.Context) ([]*model.Anything, error) {

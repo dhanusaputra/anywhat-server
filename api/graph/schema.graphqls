@@ -1,7 +1,7 @@
 type Query {
-  getAnything: Anything!
+  getAnything(id: ID!): Anything!
   listAnything: [Anything!]!
-  login(username: String!, password: String!): Token!
+  login(username: String!, password: String!): String!
   me: User
 }
 
@@ -13,25 +13,24 @@ type Mutation {
 input AnythingInput {
   name: String!
   description: String
-  createdAt: Timestamp
-  updatedAt: Timestamp
+  createdAt: Time
+  updatedAt: Time
 }
 
 type Anything {
   id: ID!
   name: String!
   description: String
-  createdAt: Timestamp
-  updatedAt: Timestamp
+  createdAt: Time
+  updatedAt: Time
 }
 
 type User {
   id: ID!
   username: String!
   password: String
-  createdAt: Timestamp
-  lastLoginAt: Timestamp
+  createdAt: Time
+  lastLoginAt: Time
 }
 
-scalar Timestamp
-scalar Token
+scalar Time
