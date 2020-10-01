@@ -14,16 +14,15 @@ import (
 	_ "github.com/lib/pq"
 )
 
-const defaultDBPort = 5432
-
 var (
+	// db setup
 	host     = envutil.GetEnv("HOST", "")
-	port     = envutil.GetEnvAsInt("PORT", defaultDBPort)
+	port     = envutil.GetEnv("PORT", "5432")
 	user     = envutil.GetEnv("USER", "")
 	name     = envutil.GetEnv("NAME", "")
 	password = envutil.GetEnv("PASSWORD", "")
 
-	anywhatPort = envutil.GetEnv("ANYWHAT_PORT", "")
+	anywhatPort = envutil.GetEnv("ANYWHAT_PORT", "9090")
 )
 
 func main() {
@@ -33,7 +32,7 @@ func main() {
 	flag.StringVar(&cfg.LogTimeFormat, "log-time-format", "2006-01-02T15:04:05.999999999Z07:00", "Print time format for logger e.g. 006-01-02T15:04:05Z07:00")
 	flag.Parse()
 
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s sslmode=disable", host, port, user, password)
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s sslmode=disable", host, port, user, password)
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		panic(err)

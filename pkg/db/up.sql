@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS anywhat (
 );
 
 INSERT INTO anywhat(name, description, created_at, updated_at)
-VALUES ('dummyName', 'dummyDesc', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
+VALUES ('dummyName', 'dummyDesc', '2020-08-05 18:19:03', '2020-08-05 18:19:03');
 
 CREATE TABLE IF NOT EXISTS user_account (
   id SERIAL PRIMARY KEY,

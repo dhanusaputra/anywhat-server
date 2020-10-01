@@ -17,11 +17,10 @@ import (
 	"go.uber.org/zap"
 )
 
-const defaultPort = "3000"
-
 var (
 	anywhatPort = envutil.GetEnv("ANYWHAT_PORT", "9090")
 	userPort    = envutil.GetEnv("USER_PORT", "9091")
+	gqlPort     = envutil.GetEnv("GQL_PORT", "3000")
 )
 
 func main() {
@@ -32,8 +31,6 @@ func main() {
 	if err := logger.Init(cfg.LogLevel, cfg.LogTimeFormat); err != nil {
 		panic(err)
 	}
-
-	port := envutil.GetEnv("GQL_PORT", defaultPort)
 
 	anywhatClient := anywhat.NewClient("localhost:" + anywhatPort)
 	userClient := user.NewClient("localhost:" + userPort)
@@ -49,6 +46,6 @@ func main() {
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)
 
-	logger.Log.Info("connect to GraphQL playground", zap.String("host", fmt.Sprintf("http://localhost:%s/", port)))
-	logger.Log.Fatal("listenAndServe failed", zap.Error(http.ListenAndServe(":"+port, nil)))
+	logger.Log.Info("connect to GraphQL playground", zap.String("host", fmt.Sprintf("http://localhost:%s/", gqlPort)))
+	logger.Log.Fatal("listenAndServe failed", zap.Error(http.ListenAndServe(":"+gqlPort, nil)))
 }
