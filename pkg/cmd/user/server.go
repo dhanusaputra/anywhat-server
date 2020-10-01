@@ -22,7 +22,7 @@ type grpcServer struct {
 
 // ListenGRPC ...
 func ListenGRPC(s service.User, cfg cmd.Config) error {
-	lis, err := net.Listen("tcp", ":"+cfg.GRPCPort)
+	lis, err := net.Listen("tcp", ":"+cfg.UserPort)
 	if err != nil {
 		return err
 	}
@@ -32,7 +32,7 @@ func ListenGRPC(s service.User, cfg cmd.Config) error {
 	pb.RegisterUserServiceServer(serv, &grpcServer{s})
 	reflection.Register(serv)
 	// start gRPC server
-	logger.Log.Info("starting gRPC server...", zap.String("port", cfg.GRPCPort))
+	logger.Log.Info("starting gRPC server...", zap.String("url", cfg.UserPort))
 	return serv.Serve(lis)
 }
 

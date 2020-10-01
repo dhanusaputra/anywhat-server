@@ -22,11 +22,13 @@ var (
 	user     = envutil.GetEnv("USER", "")
 	name     = envutil.GetEnv("NAME", "")
 	password = envutil.GetEnv("PASSWORD", "")
+
+	userPort = envutil.GetEnv("USER_PORT", "")
 )
 
 func main() {
 	var cfg cmd.Config
-	flag.StringVar(&cfg.GRPCPort, "grpc-port", "9091", "gRPC port to bind")
+	flag.StringVar(&cfg.UserPort, "user-port", userPort, "gRPC port to bind")
 	flag.IntVar(&cfg.LogLevel, "log-level", -1, "Global log level")
 	flag.StringVar(&cfg.LogTimeFormat, "log-time-format", "2006-01-02T15:04:05.999999999Z07:00", "Print time format for logger e.g. 006-01-02T15:04:05Z07:00")
 	flag.Parse()

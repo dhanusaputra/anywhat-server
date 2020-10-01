@@ -10,10 +10,16 @@ import (
 	"github.com/dhanusaputra/anywhat-server/pkg/cmd/anywhat"
 	"github.com/dhanusaputra/anywhat-server/pkg/cmd/user"
 	"github.com/dhanusaputra/anywhat-server/pkg/logger"
+	"github.com/dhanusaputra/anywhat-server/util/envutil"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/empty"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/metadata"
+)
+
+var (
+	anywhatPort = envutil.GetEnv("ANYWHAT_PORT", "9090")
+	userPort    = envutil.GetEnv("USER_PORT", "9091")
 )
 
 func main() {
@@ -25,8 +31,8 @@ func main() {
 		panic(err)
 	}
 
-	anywhatClient := anywhat.NewClient("localhost:9090")
-	userClient := user.NewClient("localhost:9091")
+	anywhatClient := anywhat.NewClient("localhost:" + anywhatPort)
+	userClient := user.NewClient("localhost:" + userPort)
 	defer func() {
 		anywhatClient.Close()
 		userClient.Close()

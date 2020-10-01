@@ -6,6 +6,9 @@ CREATE TABLE IF NOT EXISTS anywhat (
   updated_at timestamp NULL DEFAULT NULL
 );
 
+INSERT INTO anywhat(name, description, created_at, updated_at)
+VALUES ('dummyName', 'dummyDesc', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
+
 CREATE TABLE IF NOT EXISTS user_account (
   id SERIAL PRIMARY KEY,
   username TEXT NOT NULL,

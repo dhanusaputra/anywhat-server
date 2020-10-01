@@ -3,8 +3,7 @@ package cmd
 // Config is configuration for Server
 type Config struct {
 	// gRPC server start parameters section
-	// gRPC is TCP port to listen by gRPC server
-	GRPCPort string
+	AnywhatPort, UserPort, GQLPort string
 
 	// Log parameters section
 	// LogLevel is global log level: Debug(-1), Info(0), Warn(1), Error(2), DPanic(3), Panic(4), Fatal(5)

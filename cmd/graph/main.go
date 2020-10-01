@@ -19,6 +19,11 @@ import (
 
 const defaultPort = "3000"
 
+var (
+	anywhatPort = envutil.GetEnv("ANYWHAT_PORT", "9090")
+	userPort    = envutil.GetEnv("USER_PORT", "9091")
+)
+
 func main() {
 	var cfg cmd.Config
 	flag.IntVar(&cfg.LogLevel, "log-level", -1, "Global log level")
@@ -30,8 +35,8 @@ func main() {
 
 	port := envutil.GetEnv("GQL_PORT", defaultPort)
 
-	anywhatClient := anywhat.NewClient("localhost:9090")
-	userClient := user.NewClient("localhost:9091")
+	anywhatClient := anywhat.NewClient("localhost:" + anywhatPort)
+	userClient := user.NewClient("localhost:" + userPort)
 	defer func() {
 		anywhatClient.Close()
 		userClient.Close()
