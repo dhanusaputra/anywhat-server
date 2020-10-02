@@ -35,6 +35,14 @@ func (r *mutationResolver) UpdateAnything(ctx context.Context, id string, input 
 	return res.Updated, nil
 }
 
+func (r *mutationResolver) DeleteAnything(ctx context.Context, id string) (bool, error) {
+	res, err := r.anywhatClient.DeleteAnything(ctx, &pb.DeleteAnythingRequest{Id: id})
+	if err != nil {
+		return false, err
+	}
+	return res.Deleted, nil
+}
+
 func (r *queryResolver) GetAnything(ctx context.Context, id string) (*model.Anything, error) {
 	res, err := r.anywhatClient.GetAnything(ctx, &pb.GetAnythingRequest{Id: id})
 	if err != nil {

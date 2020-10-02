@@ -8,6 +8,7 @@ type Query {
 type Mutation {
   createAnything(input: AnythingInput): String!
   updateAnything(id: ID!, input: AnythingInput): Boolean!
+  deleteAnything(id: ID!): Boolean!
 }
 
 input AnythingInput {
