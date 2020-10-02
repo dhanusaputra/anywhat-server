@@ -13,8 +13,6 @@ type Mutation {
 input AnythingInput {
   name: String!
   description: String
-  createdAt: Time
-  updatedAt: Time
 }
 
 type Anything {

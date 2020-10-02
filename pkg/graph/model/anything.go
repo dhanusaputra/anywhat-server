@@ -13,8 +13,6 @@ type Anything struct {
 
 // AnythingInput ...
 type AnythingInput struct {
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	CreatedAt   time.Time `json:"createdAt"`
-	UpdatedAt   time.Time `json:"updatedAt"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
 }
