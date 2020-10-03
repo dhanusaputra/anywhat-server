@@ -15,6 +15,6 @@ type Resolver struct {
 }
 
 // NewResolver ...
-func NewResolver(anywhatClient pb.AnywhatClient, userClient pb.UserServiceClient) *Resolver {
+var NewResolver = func(anywhatClient pb.AnywhatClient, userClient pb.UserServiceClient) *Resolver {
 	return &Resolver{anywhatClient, userClient}
 }
