@@ -63,7 +63,7 @@ func (r *queryResolver) ListAnything(ctx context.Context) ([]*model.Anything, er
 		return nil, err
 	}
 	a := res.Anythings
-	m := make([]*model.Anything, len(a))
+	m := make([]*model.Anything, 0, len(a))
 	for _, aa := range a {
 		m = append(m, &model.Anything{
 			ID:          aa.Id,
