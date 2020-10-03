@@ -8,8 +8,8 @@ import (
 
 	"github.com/dhanusaputra/anywhat-server/api/pb"
 	"github.com/dhanusaputra/anywhat-server/pkg/cmd"
+	"github.com/dhanusaputra/anywhat-server/pkg/cmd/middleware"
 	"github.com/dhanusaputra/anywhat-server/pkg/logger"
-	"github.com/dhanusaputra/anywhat-server/pkg/middleware"
 	"github.com/dhanusaputra/anywhat-server/pkg/service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"

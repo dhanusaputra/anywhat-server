@@ -14,6 +14,7 @@ import (
 	"github.com/dhanusaputra/anywhat-server/pkg/graph/generated"
 	"github.com/dhanusaputra/anywhat-server/pkg/logger"
 	"github.com/dhanusaputra/anywhat-server/util/envutil"
+	"github.com/go-chi/chi"
 	"go.uber.org/zap"
 )
 
@@ -39,13 +40,15 @@ func main() {
 		userClient.Close()
 	}()
 
+	router := chi.NewRouter()
+
 	resolver := graph.NewResolver(anywhatClient.Service, userClient.Service)
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: resolver}))
 
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	router.Handle("/query", srv)
 
 	logger.Log.Info("connect to GraphQL playground", zap.String("host", fmt.Sprintf("http://localhost:%s/", gqlPort)))
-	logger.Log.Fatal("listenAndServe failed", zap.Error(http.ListenAndServe(":"+gqlPort, nil)))
+	logger.Log.Fatal("listenAndServe failed", zap.Error(http.ListenAndServe(":"+gqlPort, router)))
 }
