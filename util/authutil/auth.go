@@ -1,6 +1,7 @@
 package authutil
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"time"
@@ -40,4 +41,10 @@ var ValidateJWT = func(tokenString string) (*jwt.Token, jwt.MapClaims, error) {
 		return key, nil
 	})
 	return token, claims, err
+}
+
+// GetUserContext ...
+var GetUserContext = func(ctx context.Context) *pb.User {
+	res, _ := ctx.Value(ctx).(*pb.User)
+	return res
 }

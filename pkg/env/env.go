@@ -1,4 +1,4 @@
-package constant
+package env
 
 import "github.com/dhanusaputra/anywhat-server/util/envutil"
 

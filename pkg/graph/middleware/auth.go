@@ -3,7 +3,7 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/dhanusaputra/anywhat-server/pkg/constant"
+	"github.com/dhanusaputra/anywhat-server/pkg/env"
 	"github.com/dhanusaputra/anywhat-server/util/authutil"
 )
 
@@ -11,22 +11,24 @@ import (
 func AddAuth() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if !constant.AuthEnable {
+			if !env.AuthEnable {
 				next.ServeHTTP(w, r)
 				return
 			}
-			authHeader := r.Header.Get("Authorization")
-			if authHeader == "" {
-				w.WriteHeader(http.StatusUnauthorized)
-				w.Write([]byte("no authorization found in request"))
+
+			header := r.Header.Get("Authorization")
+			if header == "" {
+				next.ServeHTTP(w, r)
 				return
 			}
-			_, _, err := authutil.ValidateJWT(authHeader)
+
+			_, _, err := authutil.ValidateJWT(header)
 			if err != nil {
 				w.WriteHeader(http.StatusForbidden)
 				w.Write([]byte(err.Error()))
 				return
 			}
+
 			next.ServeHTTP(w, r)
 		})
 	}

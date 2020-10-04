@@ -5,14 +5,20 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/dhanusaputra/anywhat-server/api/pb"
 	"github.com/dhanusaputra/anywhat-server/pkg/graph/generated"
 	"github.com/dhanusaputra/anywhat-server/pkg/graph/model"
+	"github.com/dhanusaputra/anywhat-server/util/authutil"
 	"github.com/golang/protobuf/ptypes/empty"
 )
 
 func (r *mutationResolver) CreateAnything(ctx context.Context, input *model.AnythingInput) (string, error) {
+	user := authutil.GetUserContext(ctx)
+	if user == nil {
+		return "", fmt.Errorf("access denied")
+	}
 	res, err := r.anywhatClient.CreateAnything(ctx, &pb.CreateAnythingRequest{Anything: &pb.Anything{
 		Name:        input.Name,
 		Description: input.Description,
@@ -24,6 +30,10 @@ func (r *mutationResolver) CreateAnything(ctx context.Context, input *model.Anyt
 }
 
 func (r *mutationResolver) UpdateAnything(ctx context.Context, id string, input *model.AnythingInput) (bool, error) {
+	user := authutil.GetUserContext(ctx)
+	if user == nil {
+		return false, fmt.Errorf("access denied")
+	}
 	res, err := r.anywhatClient.UpdateAnything(ctx, &pb.UpdateAnythingRequest{Anything: &pb.Anything{
 		Id:          id,
 		Name:        input.Name,
@@ -36,6 +46,10 @@ func (r *mutationResolver) UpdateAnything(ctx context.Context, id string, input 
 }
 
 func (r *mutationResolver) DeleteAnything(ctx context.Context, id string) (bool, error) {
+	user := authutil.GetUserContext(ctx)
+	if user == nil {
+		return false, fmt.Errorf("access denied")
+	}
 	res, err := r.anywhatClient.DeleteAnything(ctx, &pb.DeleteAnythingRequest{Id: id})
 	if err != nil {
 		return false, err
