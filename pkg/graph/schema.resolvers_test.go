@@ -9,6 +9,7 @@ import (
 	"github.com/dhanusaputra/anywhat-server/api/pb"
 	"github.com/dhanusaputra/anywhat-server/mocks"
 	"github.com/dhanusaputra/anywhat-server/pkg/graph/model"
+	"github.com/dhanusaputra/anywhat-server/util/authutil"
 	"github.com/dhanusaputra/anywhat-server/util/testutil"
 	"github.com/stretchr/testify/mock"
 )
@@ -24,13 +25,28 @@ func TestCreateAnything(t *testing.T) {
 		{
 			name: "happy path",
 			mock: func() {
+				authutil.GetUserContext = func(ctx context.Context) *pb.User {
+					return &pb.User{}
+				}
 				mockAnywhatClient.On("CreateAnything", mock.Anything, mock.Anything).Return(&pb.CreateAnythingResponse{Id: "mockID"}, nil).Once()
 			},
 			want: "mockID",
 		},
 		{
+			name: "failed auth",
+			mock: func() {
+				authutil.GetUserContext = func(ctx context.Context) *pb.User {
+					return nil
+				}
+			},
+			wantErr: true,
+		},
+		{
 			name: "failed create",
 			mock: func() {
+				authutil.GetUserContext = func(ctx context.Context) *pb.User {
+					return &pb.User{}
+				}
 				mockAnywhatClient.On("CreateAnything", mock.Anything, mock.Anything).Return(nil, errors.New("err")).Once()
 			},
 			wantErr: true,
@@ -38,7 +54,7 @@ func TestCreateAnything(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			defer testutil.NewPtrs([]interface{}{&NewResolver}).Restore()
+			defer testutil.NewPtrs([]interface{}{&NewResolver, &authutil.GetUserContext}).Restore()
 			tt.mock()
 			r := NewResolver(mockAnywhatClient, nil)
 			m := mutationResolver{r}
@@ -65,13 +81,28 @@ func TestUpdateAnything(t *testing.T) {
 		{
 			name: "happy path",
 			mock: func() {
+				authutil.GetUserContext = func(ctx context.Context) *pb.User {
+					return &pb.User{}
+				}
 				mockAnywhatClient.On("UpdateAnything", mock.Anything, mock.Anything).Return(&pb.UpdateAnythingResponse{Updated: true}, nil).Once()
 			},
 			want: true,
 		},
 		{
+			name: "failed auth",
+			mock: func() {
+				authutil.GetUserContext = func(ctx context.Context) *pb.User {
+					return nil
+				}
+			},
+			wantErr: true,
+		},
+		{
 			name: "failed update",
 			mock: func() {
+				authutil.GetUserContext = func(ctx context.Context) *pb.User {
+					return &pb.User{}
+				}
 				mockAnywhatClient.On("UpdateAnything", mock.Anything, mock.Anything).Return(nil, errors.New("err")).Once()
 			},
 			wantErr: true,
@@ -79,7 +110,7 @@ func TestUpdateAnything(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			defer testutil.NewPtrs([]interface{}{&NewResolver}).Restore()
+			defer testutil.NewPtrs([]interface{}{&NewResolver, &authutil.GetUserContext}).Restore()
 			tt.mock()
 			r := NewResolver(mockAnywhatClient, nil)
 			m := mutationResolver{r}
@@ -106,13 +137,28 @@ func TestDeleteAnything(t *testing.T) {
 		{
 			name: "happy path",
 			mock: func() {
+				authutil.GetUserContext = func(ctx context.Context) *pb.User {
+					return &pb.User{}
+				}
 				mockAnywhatClient.On("DeleteAnything", mock.Anything, mock.Anything).Return(&pb.DeleteAnythingResponse{Deleted: true}, nil).Once()
 			},
 			want: true,
 		},
 		{
+			name: "failed auth",
+			mock: func() {
+				authutil.GetUserContext = func(ctx context.Context) *pb.User {
+					return nil
+				}
+			},
+			wantErr: true,
+		},
+		{
 			name: "failed delete",
 			mock: func() {
+				authutil.GetUserContext = func(ctx context.Context) *pb.User {
+					return &pb.User{}
+				}
 				mockAnywhatClient.On("DeleteAnything", mock.Anything, mock.Anything).Return(nil, errors.New("err")).Once()
 			},
 			wantErr: true,
@@ -120,7 +166,7 @@ func TestDeleteAnything(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			defer testutil.NewPtrs([]interface{}{&NewResolver}).Restore()
+			defer testutil.NewPtrs([]interface{}{&NewResolver, &authutil.GetUserContext}).Restore()
 			tt.mock()
 			r := NewResolver(mockAnywhatClient, nil)
 			m := mutationResolver{r}
