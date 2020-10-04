@@ -3,23 +3,15 @@ package middleware
 import (
 	"net/http"
 
+	"github.com/dhanusaputra/anywhat-server/pkg/constant"
 	"github.com/dhanusaputra/anywhat-server/util/authutil"
-	"github.com/dhanusaputra/anywhat-server/util/envutil"
-)
-
-const (
-	defaultAuthEnable = true
 )
 
 // AddAuth ...
 func AddAuth() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			var (
-				authEnable = envutil.GetEnvAsBool("AUTH_ENABLE", defaultAuthEnable)
-			)
-
-			if !authEnable {
+			if !constant.AuthEnable {
 				next.ServeHTTP(w, r)
 				return
 			}
