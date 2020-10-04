@@ -7,6 +7,7 @@ import (
 
 	"github.com/dhanusaputra/anywhat-server/pkg/cmd"
 	usercmd "github.com/dhanusaputra/anywhat-server/pkg/cmd/user"
+	"github.com/dhanusaputra/anywhat-server/pkg/env"
 	"github.com/dhanusaputra/anywhat-server/pkg/logger"
 	"github.com/dhanusaputra/anywhat-server/pkg/service"
 	"github.com/dhanusaputra/anywhat-server/util/envutil"
@@ -43,6 +44,7 @@ func main() {
 	if err := logger.Init(cfg.LogLevel, cfg.LogTimeFormat); err != nil {
 		panic(err)
 	}
+	env.Init()
 
 	s := service.NewUserService(db)
 	if err := usercmd.ListenGRPC(s, cfg); err != nil {

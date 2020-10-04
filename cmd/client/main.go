@@ -9,6 +9,7 @@ import (
 	"github.com/dhanusaputra/anywhat-server/pkg/cmd"
 	"github.com/dhanusaputra/anywhat-server/pkg/cmd/anywhat"
 	"github.com/dhanusaputra/anywhat-server/pkg/cmd/user"
+	"github.com/dhanusaputra/anywhat-server/pkg/env"
 	"github.com/dhanusaputra/anywhat-server/pkg/logger"
 	"github.com/dhanusaputra/anywhat-server/util/envutil"
 	"github.com/golang/protobuf/ptypes"
@@ -31,6 +32,7 @@ func main() {
 	if err := logger.Init(cfg.LogLevel, cfg.LogTimeFormat); err != nil {
 		panic(err)
 	}
+	env.Init()
 
 	anywhatClient := anywhat.NewClient("localhost:" + anywhatPort)
 	userClient := user.NewClient("localhost:" + userPort)

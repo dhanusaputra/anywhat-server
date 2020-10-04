@@ -38,15 +38,4 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
     restart: "unless-stopped"
-
-  graph:
-    build:
-      context: "."
-      dockerfile: "./cmd/graph/app.dockerfile"
-    depends_on:
-      - "anywhat_server"
-      - "user_server"
-    ports:
-      - "3000:3000"
-    restart: "on-failure"
   

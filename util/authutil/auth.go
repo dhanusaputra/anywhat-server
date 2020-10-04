@@ -3,21 +3,15 @@ package authutil
 import (
 	"context"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/dhanusaputra/anywhat-server/api/pb"
-	"github.com/dhanusaputra/anywhat-server/util/envutil"
-)
-
-var (
-	key = []byte(os.Getenv("KEY"))
+	"github.com/dhanusaputra/anywhat-server/pkg/env"
 )
 
 const (
-	defaultExpiredTimeInMinute = 15
-	defaultAppName             = "anywhat"
+	defaultAppName = "anywhat"
 )
 
 // SignJWT ...
@@ -25,10 +19,10 @@ var SignJWT = func(user *pb.User) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":       user.Id,
 		"username": user.Username,
-		"exp":      time.Now().Add(time.Duration(envutil.GetEnvAsInt("JWT_EXPIRED_TIME_IN_MINUTE", defaultExpiredTimeInMinute)) * time.Minute).Unix(),
+		"exp":      time.Now().Add(time.Duration(env.JWTExpiredTimeInMinute) * time.Minute).Unix(),
 		"iss":      defaultAppName,
 	})
-	return token.SignedString(key)
+	return token.SignedString(env.Key)
 }
 
 // ValidateJWT ...
@@ -38,7 +32,7 @@ var ValidateJWT = func(tokenString string) (*jwt.Token, jwt.MapClaims, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return key, nil
+		return env.Key, nil
 	})
 	return token, claims, err
 }
