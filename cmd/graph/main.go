@@ -16,6 +16,7 @@ import (
 	"github.com/dhanusaputra/anywhat-server/pkg/logger"
 	"github.com/dhanusaputra/anywhat-server/util/envutil"
 	"github.com/go-chi/chi"
+	_ "github.com/joho/godotenv/autoload"
 	"go.uber.org/zap"
 )
 

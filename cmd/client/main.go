@@ -13,6 +13,7 @@ import (
 	"github.com/dhanusaputra/anywhat-server/util/envutil"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/empty"
+	_ "github.com/joho/godotenv/autoload"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/metadata"
 )
