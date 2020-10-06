@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/dhanusaputra/anywhat-server/api/pb"
+	"github.com/dhanusaputra/anywhat-server/pkg/graph/middleware"
 	"github.com/dhanusaputra/anywhat-server/util/authutil"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
@@ -71,7 +72,7 @@ func (s *userService) Login(ctx context.Context, username, password string) (str
 }
 
 func (s *userService) Me(ctx context.Context) (*pb.User, error) {
-	user := authutil.GetUserContext(ctx)
+	user := middleware.ForContext(ctx)
 	if user == nil {
 		return nil, status.Error(codes.Unknown, "user context is required")
 	}

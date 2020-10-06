@@ -5,19 +5,19 @@ package graph
 
 import (
 	"context"
-	"fmt"
+	"errors"
 
 	"github.com/dhanusaputra/anywhat-server/api/pb"
 	"github.com/dhanusaputra/anywhat-server/pkg/graph/generated"
+	"github.com/dhanusaputra/anywhat-server/pkg/graph/middleware"
 	"github.com/dhanusaputra/anywhat-server/pkg/graph/model"
-	"github.com/dhanusaputra/anywhat-server/util/authutil"
 	"github.com/golang/protobuf/ptypes/empty"
 )
 
 func (r *mutationResolver) CreateAnything(ctx context.Context, input *model.AnythingInput) (string, error) {
-	user := authutil.GetUserContext(ctx)
+	user := middleware.ForContext(ctx)
 	if user == nil {
-		return "", fmt.Errorf("access denied")
+		return "", errors.New("access denied")
 	}
 	res, err := r.anywhatClient.CreateAnything(ctx, &pb.CreateAnythingRequest{Anything: &pb.Anything{
 		Name:        input.Name,
@@ -30,9 +30,9 @@ func (r *mutationResolver) CreateAnything(ctx context.Context, input *model.Anyt
 }
 
 func (r *mutationResolver) UpdateAnything(ctx context.Context, id string, input *model.AnythingInput) (bool, error) {
-	user := authutil.GetUserContext(ctx)
+	user := middleware.ForContext(ctx)
 	if user == nil {
-		return false, fmt.Errorf("access denied")
+		return false, errors.New("access denied")
 	}
 	res, err := r.anywhatClient.UpdateAnything(ctx, &pb.UpdateAnythingRequest{Anything: &pb.Anything{
 		Id:          id,
@@ -46,9 +46,9 @@ func (r *mutationResolver) UpdateAnything(ctx context.Context, id string, input 
 }
 
 func (r *mutationResolver) DeleteAnything(ctx context.Context, id string) (bool, error) {
-	user := authutil.GetUserContext(ctx)
+	user := middleware.ForContext(ctx)
 	if user == nil {
-		return false, fmt.Errorf("access denied")
+		return false, errors.New("access denied")
 	}
 	res, err := r.anywhatClient.DeleteAnything(ctx, &pb.DeleteAnythingRequest{Id: id})
 	if err != nil {
@@ -99,13 +99,13 @@ func (r *queryResolver) Login(ctx context.Context, username string, password str
 }
 
 func (r *queryResolver) Me(ctx context.Context) (*model.User, error) {
-	res, err := r.userClient.Me(ctx, new(empty.Empty))
-	if err != nil {
-		return nil, err
+	user := middleware.ForContext(ctx)
+	if user == nil {
+		return nil, errors.New("access denied")
 	}
 	return &model.User{
-		ID:       res.User.Id,
-		Username: res.User.Username,
+		ID:       user.Id,
+		Username: user.Username,
 	}, nil
 }
 

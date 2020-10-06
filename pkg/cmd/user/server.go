@@ -47,6 +47,7 @@ func (s *grpcServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Login
 
 // Me ...
 func (s *grpcServer) Me(ctx context.Context, _ *emptypb.Empty) (*pb.MeResponse, error) {
+	
 	user, err := s.user.Me(ctx)
 	if err != nil {
 		return nil, err
