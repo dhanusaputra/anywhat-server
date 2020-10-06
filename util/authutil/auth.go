@@ -51,7 +51,7 @@ func WithUserContext(ctx context.Context, user *pb.User) context.Context {
 
 // GetUserContext ...
 var GetUserContext = func(ctx context.Context) *pb.User {
-	res, ok := ctx.Value(ctx).(*pb.User)
+	res, ok := ctx.Value(CtxKeyUser).(*pb.User)
 	if !ok {
 		logger.Log.Error("convert user failed", zap.String("loc", "util.authutil"))
 		return nil
