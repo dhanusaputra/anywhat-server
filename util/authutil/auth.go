@@ -8,10 +8,17 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/dhanusaputra/anywhat-server/api/pb"
 	"github.com/dhanusaputra/anywhat-server/pkg/env"
+	"github.com/dhanusaputra/anywhat-server/pkg/logger"
+	"go.uber.org/zap"
 )
+
+type ctxKey string
 
 const (
 	defaultAppName = "anywhat"
+
+	// CtxKeyUser ...
+	CtxKeyUser ctxKey = "auth-user"
 )
 
 // SignJWT ...
@@ -37,8 +44,17 @@ var ValidateJWT = func(tokenString string) (*jwt.Token, jwt.MapClaims, error) {
 	return token, claims, err
 }
 
+// WithUserContext ...
+func WithUserContext(ctx context.Context, user *pb.User) context.Context {
+	return context.WithValue(ctx, CtxKeyUser, user)
+}
+
 // GetUserContext ...
 var GetUserContext = func(ctx context.Context) *pb.User {
-	res, _ := ctx.Value(ctx).(*pb.User)
+	res, ok := ctx.Value(ctx).(*pb.User)
+	if !ok {
+		logger.Log.Error("convert user failed", zap.String("loc", "util.authutil"))
+		return nil
+	}
 	return res
 }

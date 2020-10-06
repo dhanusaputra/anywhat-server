@@ -40,7 +40,7 @@ func main() {
 	}
 	defer db.Close()
 
-	// initialize logger
+	// init
 	if err := logger.Init(cfg.LogLevel, cfg.LogTimeFormat); err != nil {
 		panic(err)
 	}

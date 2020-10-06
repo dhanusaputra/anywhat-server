@@ -3,6 +3,7 @@ package middleware
 import (
 	"net/http"
 
+	"github.com/dhanusaputra/anywhat-server/api/pb"
 	"github.com/dhanusaputra/anywhat-server/pkg/env"
 	"github.com/dhanusaputra/anywhat-server/util/authutil"
 )
@@ -21,13 +22,18 @@ func AddAuth(next http.Handler) http.Handler {
 			return
 		}
 
-		_, _, err := authutil.ValidateJWT(header)
+		_, claims, err := authutil.ValidateJWT(header)
 		if err != nil {
 			w.WriteHeader(http.StatusForbidden)
 			w.Write([]byte(err.Error()))
 			return
 		}
 
-		next.ServeHTTP(w, r)
+		ctx := r.Context()
+		authutil.WithUserContext(ctx, &pb.User{
+			Id:       claims["id"].(string),
+			Username: claims["username"].(string),
+		})
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

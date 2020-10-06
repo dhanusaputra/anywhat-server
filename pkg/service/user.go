@@ -4,13 +4,11 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log"
 
 	"github.com/dhanusaputra/anywhat-server/api/pb"
 	"github.com/dhanusaputra/anywhat-server/util/authutil"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 )
 
@@ -73,20 +71,9 @@ func (s *userService) Login(ctx context.Context, username, password string) (str
 }
 
 func (s *userService) Me(ctx context.Context) (*pb.User, error) {
-	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		return nil, status.Error(codes.Unknown, "metadata is required")
+	user := authutil.GetUserContext(ctx)
+	if user == nil {
+		return nil, status.Error(codes.Unknown, "user context is required")
 	}
-	auth := md.Get("authorization")
-	if len(auth) == 0 || len(auth[0]) == 0 {
-		return nil, status.Error(codes.InvalidArgument, "authorization is required")
-	}
-	_, claims, err := authutil.ValidateJWT(auth[0])
-	if err != nil {
-		log.Print(err.Error())
-	}
-	return &pb.User{
-		Id:       claims["id"].(string),
-		Username: claims["username"].(string),
-	}, nil
+	return user, nil
 }
