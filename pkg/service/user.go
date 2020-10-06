@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/dhanusaputra/anywhat-server/api/pb"
-	"github.com/dhanusaputra/anywhat-server/pkg/graph/middleware"
+	"github.com/dhanusaputra/anywhat-server/pkg/auth"
 	"github.com/dhanusaputra/anywhat-server/util/authutil"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
@@ -71,8 +71,9 @@ func (s *userService) Login(ctx context.Context, username, password string) (str
 	return token, nil
 }
 
+// TODO deprecate me
 func (s *userService) Me(ctx context.Context) (*pb.User, error) {
-	user := middleware.ForContext(ctx)
+	user := auth.ForContext(ctx)
 	if user == nil {
 		return nil, status.Error(codes.Unknown, "user context is required")
 	}

@@ -1,4 +1,4 @@
-package middleware
+package auth
 
 import (
 	"context"
@@ -16,8 +16,8 @@ type contextKey struct {
 	name string
 }
 
-// AddAuth ...
-func AddAuth(next http.Handler) http.Handler {
+// Middleware ...
+func Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !env.AuthEnable {
 			next.ServeHTTP(w, r)

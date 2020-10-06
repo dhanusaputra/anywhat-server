@@ -7,13 +7,13 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/dhanusaputra/anywhat-server/pkg/auth"
 	"github.com/dhanusaputra/anywhat-server/pkg/cmd"
 	"github.com/dhanusaputra/anywhat-server/pkg/cmd/anywhat"
 	"github.com/dhanusaputra/anywhat-server/pkg/cmd/user"
 	"github.com/dhanusaputra/anywhat-server/pkg/env"
 	"github.com/dhanusaputra/anywhat-server/pkg/graph"
 	"github.com/dhanusaputra/anywhat-server/pkg/graph/generated"
-	"github.com/dhanusaputra/anywhat-server/pkg/graph/middleware"
 	"github.com/dhanusaputra/anywhat-server/pkg/logger"
 	"github.com/dhanusaputra/anywhat-server/util/envutil"
 	"github.com/go-chi/chi"
@@ -47,7 +47,7 @@ func main() {
 
 	router := chi.NewRouter()
 
-	router.Use(middleware.AddAuth)
+	router.Use(auth.Middleware)
 
 	resolver := graph.NewResolver(anywhatClient.Service, userClient.Service)
 
