@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/dhanusaputra/anywhat-server/api/pb"
-	"github.com/dhanusaputra/anywhat-server/pkg/auth"
 	"github.com/dhanusaputra/anywhat-server/util/authutil"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
@@ -73,7 +72,7 @@ func (s *userService) Login(ctx context.Context, username, password string) (str
 
 // TODO deprecate me
 func (s *userService) Me(ctx context.Context) (*pb.User, error) {
-	user := auth.ForContext(ctx)
+	user := authutil.GetUserContext(ctx)
 	if user == nil {
 		return nil, status.Error(codes.Unknown, "user context is required")
 	}

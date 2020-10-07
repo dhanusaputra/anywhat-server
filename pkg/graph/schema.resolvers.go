@@ -8,14 +8,14 @@ import (
 	"errors"
 
 	"github.com/dhanusaputra/anywhat-server/api/pb"
-	"github.com/dhanusaputra/anywhat-server/pkg/auth"
 	"github.com/dhanusaputra/anywhat-server/pkg/graph/generated"
 	"github.com/dhanusaputra/anywhat-server/pkg/graph/model"
+	"github.com/dhanusaputra/anywhat-server/util/authutil"
 	"github.com/golang/protobuf/ptypes/empty"
 )
 
 func (r *mutationResolver) CreateAnything(ctx context.Context, input *model.AnythingInput) (string, error) {
-	user := auth.ForContext(ctx)
+	user := authutil.GetUserContext(ctx)
 	if user == nil {
 		return "", errors.New("access denied")
 	}
@@ -30,7 +30,7 @@ func (r *mutationResolver) CreateAnything(ctx context.Context, input *model.Anyt
 }
 
 func (r *mutationResolver) UpdateAnything(ctx context.Context, id string, input *model.AnythingInput) (bool, error) {
-	user := auth.ForContext(ctx)
+	user := authutil.GetUserContext(ctx)
 	if user == nil {
 		return false, errors.New("access denied")
 	}
@@ -46,7 +46,7 @@ func (r *mutationResolver) UpdateAnything(ctx context.Context, id string, input 
 }
 
 func (r *mutationResolver) DeleteAnything(ctx context.Context, id string) (bool, error) {
-	user := auth.ForContext(ctx)
+	user := authutil.GetUserContext(ctx)
 	if user == nil {
 		return false, errors.New("access denied")
 	}
@@ -99,7 +99,7 @@ func (r *queryResolver) Login(ctx context.Context, username string, password str
 }
 
 func (r *queryResolver) Me(ctx context.Context) (*model.User, error) {
-	user := auth.ForContext(ctx)
+	user := authutil.GetUserContext(ctx)
 	if user == nil {
 		return nil, errors.New("access denied")
 	}
