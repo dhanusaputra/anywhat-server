@@ -2,7 +2,6 @@ syntax = "proto3";
 package pb;
 
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/empty.proto";
 
 option go_package = ".;pb";
 
@@ -10,8 +9,6 @@ option go_package = ".;pb";
 service UserService {
     // Login ...
     rpc Login (LoginRequest) returns (LoginResponse){}
-    // Me ...
-    rpc Me (google.protobuf.Empty) returns (MeResponse){}
 }
 
 // User ...
@@ -31,9 +28,4 @@ message LoginRequest{
 
 message LoginResponse{
     string token = 1;
-}
-
-// MeResponse ...
-message MeResponse {
-    User user = 1;
 }

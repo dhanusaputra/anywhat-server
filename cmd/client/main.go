@@ -16,7 +16,6 @@ import (
 	"github.com/golang/protobuf/ptypes/empty"
 	_ "github.com/joho/godotenv/autoload"
 	"go.uber.org/zap"
-	"google.golang.org/grpc/metadata"
 )
 
 var (
@@ -115,13 +114,4 @@ func main() {
 		logger.Log.Fatal("Login failed", zap.Error(err))
 	}
 	logger.Log.Info("Login result", zap.Any("res", res6))
-
-	md := metadata.New(map[string]string{"authorization": res6.Token})
-	ctx = metadata.NewOutgoingContext(context.Background(), md)
-
-	res7, err := userClient.Service.Me(ctx, new(empty.Empty))
-	if err != nil {
-		logger.Log.Fatal("Me failed", zap.Error(err))
-	}
-	logger.Log.Info("Me result", zap.Any("res", res7))
 }

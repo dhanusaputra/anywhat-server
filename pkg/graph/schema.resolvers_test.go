@@ -310,21 +310,25 @@ func TestMe(t *testing.T) {
 		{
 			name: "happy path",
 			mock: func() {
-				mockUserClient.On("Me", mock.Anything, mock.Anything).Return(&pb.MeResponse{User: &pb.User{}}, nil).Once()
+				authutil.GetUserContext = func(ctx context.Context) *pb.User {
+					return &pb.User{}
+				}
 			},
 			want: &pb.User{},
 		},
 		{
 			name: "failed me",
 			mock: func() {
-				mockUserClient.On("Me", mock.Anything, mock.Anything).Return(nil, errors.New("err")).Once()
+				authutil.GetUserContext = func(ctx context.Context) *pb.User {
+					return nil
+				}
 			},
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			defer testutil.NewPtrs([]interface{}{&NewResolver}).Restore()
+			defer testutil.NewPtrs([]interface{}{&authutil.GetUserContext}).Restore()
 			tt.mock()
 			r := NewResolver(nil, mockUserClient)
 			q := queryResolver{r}

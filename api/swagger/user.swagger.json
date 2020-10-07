@@ -20,41 +20,6 @@
         }
       }
     },
-    "pbMeResponse": {
-      "type": "object",
-      "properties": {
-        "user": {
-          "$ref": "#/definitions/pbUser"
-        }
-      },
-      "description": "MeResponse ..."
-    },
-    "pbUser": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "username": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string"
-        },
-        "passwordHash": {
-          "type": "string"
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "lastLoginAt": {
-          "type": "string",
-          "format": "date-time"
-        }
-      },
-      "description": "User ..."
-    },
     "protobufAny": {
       "type": "object",
       "properties": {

@@ -13,7 +13,6 @@ import (
 	"github.com/dhanusaputra/anywhat-server/pkg/service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type grpcServer struct {
@@ -43,14 +42,4 @@ func (s *grpcServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Login
 		return nil, err
 	}
 	return &pb.LoginResponse{Token: token}, nil
-}
-
-// Me ...
-func (s *grpcServer) Me(ctx context.Context, _ *emptypb.Empty) (*pb.MeResponse, error) {
-	
-	user, err := s.user.Me(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return &pb.MeResponse{User: user}, nil
 }

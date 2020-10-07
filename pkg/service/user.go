@@ -15,7 +15,6 @@ import (
 // User ...
 type User interface {
 	Login(ctx context.Context, username, password string) (string, error)
-	Me(ctx context.Context) (*pb.User, error)
 }
 
 type userService struct {
@@ -68,13 +67,4 @@ func (s *userService) Login(ctx context.Context, username, password string) (str
 	}
 
 	return token, nil
-}
-
-// TODO deprecate me
-func (s *userService) Me(ctx context.Context) (*pb.User, error) {
-	user := authutil.GetUserContext(ctx)
-	if user == nil {
-		return nil, status.Error(codes.Unknown, "user context is required")
-	}
-	return user, nil
 }
