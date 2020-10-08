@@ -47,6 +47,8 @@ func main() {
 
 	router := chi.NewRouter()
 
+	router.Use(middleware.AddRequestID)
+	router.Use(middleware.AddLogger)
 	router.Use(middleware.AddAuth)
 
 	resolver := graph.NewResolver(anywhatClient.Service, userClient.Service)
