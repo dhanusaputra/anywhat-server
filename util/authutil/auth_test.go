@@ -14,9 +14,9 @@ func TestSignJWT(t *testing.T) {
 		Username: "username",
 		Password: "password",
 	}
-	tokenString, err := SignJWT(user)
+	got, err := SignJWT(user)
 	assert.Nil(t, err)
-	assert.NotNil(t, tokenString)
+	assert.NotNil(t, got)
 }
 
 func TestValidateJWT(t *testing.T) {
@@ -27,7 +27,8 @@ func TestValidateJWT(t *testing.T) {
 		"iss":        "anywhat",
 		"username":   "username",
 	}
-	_, got, err := ValidateJWT(tokenString)
+	token, got, err := ValidateJWT(tokenString)
 	assert.Nil(t, err)
 	assert.Equal(t, want, got)
+	assert.NotNil(t, token)
 }

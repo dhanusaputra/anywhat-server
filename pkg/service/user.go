@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"database/sql"
-	"fmt"
 
 	"github.com/dhanusaputra/anywhat-server/api/pb"
 	"github.com/dhanusaputra/anywhat-server/util/authutil"
@@ -55,7 +54,7 @@ func (s *userService) Login(ctx context.Context, username, password string) (str
 
 	err = bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(password))
 	if err != nil {
-		return "", status.Error(codes.PermissionDenied, fmt.Sprintf("failed to login, err: %v", err))
+		return "", status.Errorf(codes.PermissionDenied, "failed to login, err: %v", err)
 	}
 
 	token, err := authutil.SignJWT(&pb.User{
@@ -63,7 +62,7 @@ func (s *userService) Login(ctx context.Context, username, password string) (str
 		Username: u.Username,
 	})
 	if err != nil {
-		return "", status.Error(codes.Unknown, fmt.Sprintf("failed to login, err: %v", err))
+		return "", status.Errorf(codes.Unknown, "failed to login, err: %v", err)
 	}
 
 	return token, nil
