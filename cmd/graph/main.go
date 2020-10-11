@@ -45,15 +45,15 @@ func main() {
 		userClient.Close()
 	}()
 
+	resolver := graph.NewResolver(anywhatClient.Service, userClient.Service)
+
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: resolver}))
+
 	router := chi.NewRouter()
 
 	router.Use(middleware.AddRequestID)
 	router.Use(middleware.AddLogger)
 	router.Use(middleware.AddAuth)
-
-	resolver := graph.NewResolver(anywhatClient.Service, userClient.Service)
-
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: resolver}))
 
 	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	router.Handle("/query", srv)
