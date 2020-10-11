@@ -19,8 +19,6 @@ func TestAddRequestID(t *testing.T) {
 			name: "happy path",
 			req: func() *http.Request {
 				req, _ := http.NewRequest("GET", "/", nil)
-				req.Header.Add("X-Request-Id", "req-123456")
-
 				return req
 			},
 		},
@@ -36,7 +34,6 @@ func TestAddRequestID(t *testing.T) {
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			requestID := GetReqID(r.Context())
 			response := fmt.Sprintf("RequestID: %s", requestID)
-
 			w.Write([]byte(response))
 		})
 		r.ServeHTTP(w, tt.req())
