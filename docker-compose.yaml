@@ -6,9 +6,9 @@ services:
       context: "."
       dockerfile: "./cmd/server/anywhat/app.dockerfile"
     depends_on:
-      - "db"
+      - "db_anywhat"
     environment:
-      DATABASE_URL: "postgres://postgres:postgres@db/anywhat?sslmode=disable"
+      DATABASE_URL: "postgres://postgres:postgres@db_anywhat/anywhat?sslmode=disable"
     ports:
       - "9090:9090"
     env_file:
@@ -20,18 +20,28 @@ services:
       context: "."
       dockerfile: "./cmd/server/user/app.dockerfile"
     depends_on:
-      - "db"
+      - "db_user"
     environment:
-      DATABASE_URL: "postgres://postgres:postgres@db/user?sslmode=disable"
+      DATABASE_URL: "postgres://postgres:postgres@db_user/user?sslmode=disable"
     ports:
       - "9091:9091"
     env_file:
       - .env
     restart: "on-failure"
 
-  db:
+  db_anywhat:
     build:
-      context: "./pkg/db"
+      context: "./pkg/db/anywhat"
+      dockerfile: "db.dockerfile"
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    restart: "unless-stopped"
+
+  db_user:
+    build:
+      context: "./pkg/db/user"
       dockerfile: "db.dockerfile"
     environment:
       POSTGRES_DB: "postgres"

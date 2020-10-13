@@ -17,7 +17,7 @@ import (
 
 var (
 	// db setup
-	host     = envutil.GetEnv("HOST", "")
+	host     = envutil.GetEnv("DB_ANYWHAT_HOST", "")
 	port     = envutil.GetEnv("PORT", "5432")
 	user     = envutil.GetEnv("USER", "")
 	name     = envutil.GetEnv("NAME", "")
