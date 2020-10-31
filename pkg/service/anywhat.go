@@ -62,7 +62,7 @@ func (s *anywhatService) Get(ctx context.Context, id string) (*pb.Anything, erro
 func (s *anywhatService) List(ctx context.Context) ([]*pb.Anything, error) {
 	rows, err := s.db.Query("SELECT id, name, description, created_at, updated_at FROM anywhat")
 	if err != nil {
-		return nil, status.Errorf(codes.Unknown, "failed to query anythings, err: %s", err.Error())
+		return nil, status.Errorf(codes.Unknown, "failed to query anything, err: %s", err.Error())
 	}
 	defer rows.Close()
 
