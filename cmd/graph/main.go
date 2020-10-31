@@ -38,8 +38,8 @@ func main() {
 	}
 	env.Init()
 
-	anywhatClient := anywhat.NewClient("localhost:" + anywhatPort)
-	userClient := user.NewClient("localhost:" + userPort)
+	anywhatClient := anywhat.NewClient("anywhat_server:" + anywhatPort)
+	userClient := user.NewClient("user_server:" + userPort)
 	defer func() {
 		anywhatClient.Close()
 		userClient.Close()

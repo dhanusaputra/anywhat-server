@@ -25,6 +25,19 @@ services:
       - .env
     restart: "on-failure"
 
+  graph_server:
+    build:
+      context: "."
+      dockerfile: "./cmd/graph/app.dockerfile"
+    depends_on:
+      - "anywhat_server"
+      - "user_server"
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    restart: "on-failure"
+
   db_anywhat:
     build:
       context: "./pkg/db/anywhat"
