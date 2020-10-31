@@ -12,7 +12,6 @@ import (
 	"github.com/dhanusaputra/anywhat-server/pkg/logger"
 	"github.com/dhanusaputra/anywhat-server/pkg/service"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -30,7 +29,6 @@ func ListenGRPC(s service.Anywhat, cfg cmd.Config) error {
 	opts = middleware.AddLogging(logger.Log, opts)
 	serv := grpc.NewServer(opts...)
 	pb.RegisterAnywhatServer(serv, &grpcServer{s})
-	reflection.Register(serv)
 	// start gRPC server
 	logger.Log.Info("starting gRPC server...", zap.String("url", cfg.AnywhatPort))
 	return serv.Serve(lis)
