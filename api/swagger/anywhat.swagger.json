@@ -57,7 +57,7 @@
     "pbGetAnythingResponse": {
       "type": "object",
       "properties": {
-        "Anything": {
+        "anything": {
           "$ref": "#/definitions/pbAnything"
         }
       },
@@ -66,7 +66,7 @@
     "pbListAnythingResponse": {
       "type": "object",
       "properties": {
-        "Anythings": {
+        "anythings": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/pbAnything"

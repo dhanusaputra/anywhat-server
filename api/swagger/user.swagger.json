@@ -12,13 +12,90 @@
   ],
   "paths": {},
   "definitions": {
+    "pbCreateUserResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "description": "CreateUserResponse ..."
+    },
+    "pbDeleteUserResponse": {
+      "type": "object",
+      "properties": {
+        "deleted": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      },
+      "description": "DeleteUserResponse ..."
+    },
+    "pbGetUserResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/pbUser"
+        }
+      },
+      "description": "GetUserResponse ..."
+    },
+    "pbListUserResponse": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/pbUser"
+          }
+        }
+      },
+      "description": "ListUserResponse ..."
+    },
     "pbLoginResponse": {
       "type": "object",
       "properties": {
         "token": {
           "type": "string"
         }
-      }
+      },
+      "description": "LoginResponse  ..."
+    },
+    "pbUpdateUserResponse": {
+      "type": "object",
+      "properties": {
+        "updated": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      },
+      "description": "UpdateUserResponse ..."
+    },
+    "pbUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "passwordHash": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastLoginAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "User ..."
     },
     "protobufAny": {
       "type": "object",

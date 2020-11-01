@@ -36,12 +36,12 @@ message GetAnythingRequest {
 
 // GetAnythingResponse ...
 message GetAnythingResponse{
-    Anything Anything = 1;
+    Anything anything = 1;
 }
 
 // UpdateAnythingRequest ...
 message UpdateAnythingRequest {
-    Anything Anything = 1;
+    Anything anything = 1;
 }
 
 // UpdateAnythingResponse ...
@@ -51,7 +51,7 @@ message UpdateAnythingResponse{
 
 // CreateAnythingRequest ...
 message CreateAnythingRequest {
-    Anything Anything = 1;
+    Anything anything = 1;
 }
 
 // CreateAnythingResponse ...
@@ -71,6 +71,6 @@ message DeleteAnythingResponse{
 
 // ListAnythingResponse ...
 message ListAnythingResponse{
-    repeated Anything Anythings = 1;
+    repeated Anything anythings = 1;
 }
 

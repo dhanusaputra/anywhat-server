@@ -2,6 +2,7 @@ syntax = "proto3";
 package pb;
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
 
 option go_package = ".;pb";
 
@@ -9,6 +10,16 @@ option go_package = ".;pb";
 service UserService {
     // Login ...
     rpc Login (LoginRequest) returns (LoginResponse){}
+    // GetUser ...
+    rpc GetUser (GetUserRequest) returns (GetUserResponse){}
+    // UpdateUser ...
+    rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse){}
+    // CreateUser ...
+    rpc CreateUser (CreateUserRequest) returns (CreateUserResponse){}
+    // DeleteUser ...
+    rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse){}
+    // ListUser ...
+    rpc ListUser (google.protobuf.Empty) returns (ListUserResponse){}
 }
 
 // User ...
@@ -21,11 +32,58 @@ message User {
     google.protobuf.Timestamp lastLoginAt = 6;
 }
 
-message LoginRequest{
+// LoginRequest ...
+message LoginRequest {
     string username = 1;
     string password = 2;
 }
 
-message LoginResponse{
+// LoginResponse  ...
+message LoginResponse {
     string token = 1;
+}
+
+// GetUserRequest ...
+message GetUserRequest {
+    string id = 1;
+}
+
+// GetUserResponse ...
+message GetUserResponse {
+    User user = 1;
+}
+
+// UpdateUserRequest ...
+message UpdateUserRequest {
+    User user = 1;
+}
+
+// UpdateUserResponse ...
+message UpdateUserResponse {
+    bool updated = 1;
+}
+
+// CreateUserRequest ...
+message CreateUserRequest {
+    User user = 1;
+}
+
+// CreateUserResponse ...
+message CreateUserResponse {
+    string id = 1;
+}
+
+// DeleteUserRequest ...
+message DeleteUserRequest {
+    string id = 1;
+}
+
+// DeleteUserResponse ...
+message DeleteUserResponse {
+    bool deleted = 1;
+}
+
+// ListUserResponse ...
+message ListUserResponse {
+    repeated User users = 1;
 }
