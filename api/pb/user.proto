@@ -8,82 +8,62 @@ option go_package = ".;pb";
 
 // UserService ...
 service UserService {
-    // Login ...
-    rpc Login (LoginRequest) returns (LoginResponse){}
-    // GetUser ...
-    rpc GetUser (GetUserRequest) returns (GetUserResponse){}
-    // UpdateUser ...
-    rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse){}
-    // CreateUser ...
-    rpc CreateUser (CreateUserRequest) returns (CreateUserResponse){}
-    // DeleteUser ...
-    rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse){}
-    // ListUser ...
-    rpc ListUser (google.protobuf.Empty) returns (ListUserResponse){}
+  // Login ...
+  rpc Login(LoginRequest) returns(LoginResponse) {}
+  // GetUser ...
+  rpc GetUser(GetUserRequest) returns(GetUserResponse) {}
+  // UpdateUser ...
+  rpc UpdateUser(UpdateUserRequest) returns(UpdateUserResponse) {}
+  // CreateUser ...
+  rpc CreateUser(CreateUserRequest) returns(CreateUserResponse) {}
+  // DeleteUser ...
+  rpc DeleteUser(DeleteUserRequest) returns(DeleteUserResponse) {}
+  // ListUser ...
+  rpc ListUser(google.protobuf.Empty) returns(ListUserResponse) {}
 }
 
 // User ...
 message User {
-    string id = 1;
-    string username = 2;
-    string password = 3;
-    string passwordHash = 4;
-    google.protobuf.Timestamp createdAt = 5;
-    google.protobuf.Timestamp lastLoginAt = 6;
+  string id = 1;
+  string username = 2;
+  string password = 3;
+  string passwordHash = 4;
+  google.protobuf.Timestamp createdAt = 5;
+  google.protobuf.Timestamp lastLoginAt = 6;
 }
 
 // LoginRequest ...
 message LoginRequest {
-    string username = 1;
-    string password = 2;
+  string username = 1;
+  string password = 2;
 }
 
 // LoginResponse  ...
-message LoginResponse {
-    string token = 1;
-}
+message LoginResponse { string token = 1; }
 
 // GetUserRequest ...
-message GetUserRequest {
-    string id = 1;
-}
+message GetUserRequest { string id = 1; }
 
 // GetUserResponse ...
-message GetUserResponse {
-    User user = 1;
-}
+message GetUserResponse { User user = 1; }
 
 // UpdateUserRequest ...
-message UpdateUserRequest {
-    User user = 1;
-}
+message UpdateUserRequest { User user = 1; }
 
 // UpdateUserResponse ...
-message UpdateUserResponse {
-    bool updated = 1;
-}
+message UpdateUserResponse { bool updated = 1; }
 
 // CreateUserRequest ...
-message CreateUserRequest {
-    User user = 1;
-}
+message CreateUserRequest { User user = 1; }
 
 // CreateUserResponse ...
-message CreateUserResponse {
-    string id = 1;
-}
+message CreateUserResponse { string id = 1; }
 
 // DeleteUserRequest ...
-message DeleteUserRequest {
-    string id = 1;
-}
+message DeleteUserRequest { string id = 1; }
 
 // DeleteUserResponse ...
-message DeleteUserResponse {
-    bool deleted = 1;
-}
+message DeleteUserResponse { bool deleted = 1; }
 
 // ListUserResponse ...
-message ListUserResponse {
-    repeated User users = 1;
-}
+message ListUserResponse { repeated User users = 1; }

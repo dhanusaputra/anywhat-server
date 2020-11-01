@@ -8,69 +8,50 @@ option go_package = ".;pb";
 
 // Anywhat ...
 service Anywhat {
-    // GetAnything ...
-    rpc GetAnything (GetAnythingRequest) returns (GetAnythingResponse){}
-    // UpdateAnything ...
-    rpc UpdateAnything (UpdateAnythingRequest) returns (UpdateAnythingResponse){}
-    // CreateAnything ...
-    rpc CreateAnything (CreateAnythingRequest) returns (CreateAnythingResponse){}
-    // DeleteAnything ...
-    rpc DeleteAnything (DeleteAnythingRequest) returns (DeleteAnythingResponse){}
-    // ListAnything ...
-    rpc ListAnything (google.protobuf.Empty) returns (ListAnythingResponse){}
+  // GetAnything ...
+  rpc GetAnything(GetAnythingRequest) returns(GetAnythingResponse) {}
+  // UpdateAnything ...
+  rpc UpdateAnything(UpdateAnythingRequest) returns(UpdateAnythingResponse) {}
+  // CreateAnything ...
+  rpc CreateAnything(CreateAnythingRequest) returns(CreateAnythingResponse) {}
+  // DeleteAnything ...
+  rpc DeleteAnything(DeleteAnythingRequest) returns(DeleteAnythingResponse) {}
+  // ListAnything ...
+  rpc ListAnything(google.protobuf.Empty) returns(ListAnythingResponse) {}
 }
 
 // Anything ...
 message Anything {
-    string id = 1;
-    string name = 2;
-    string description = 3;
-    google.protobuf.Timestamp createdAt = 4;
-    google.protobuf.Timestamp updatedAt = 5;
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  google.protobuf.Timestamp createdAt = 4;
+  google.protobuf.Timestamp updatedAt = 5;
 }
 
 // GetAnythingRequest ...
-message GetAnythingRequest {
-    string id = 1;
-}
+message GetAnythingRequest { string id = 1; }
 
 // GetAnythingResponse ...
-message GetAnythingResponse{
-    Anything anything = 1;
-}
+message GetAnythingResponse { Anything anything = 1; }
 
 // UpdateAnythingRequest ...
-message UpdateAnythingRequest {
-    Anything anything = 1;
-}
+message UpdateAnythingRequest { Anything anything = 1; }
 
 // UpdateAnythingResponse ...
-message UpdateAnythingResponse{
-    bool updated = 1;
-}
+message UpdateAnythingResponse { bool updated = 1; }
 
 // CreateAnythingRequest ...
-message CreateAnythingRequest {
-    Anything anything = 1;
-}
+message CreateAnythingRequest { Anything anything = 1; }
 
 // CreateAnythingResponse ...
-message CreateAnythingResponse{
-    string id = 1;
-}
+message CreateAnythingResponse { string id = 1; }
 
 // DeleteAnythingRequest ...
-message DeleteAnythingRequest {
-    string id = 1;
-}
+message DeleteAnythingRequest { string id = 1; }
 
 // DeleteAnythingResponse ...
-message DeleteAnythingResponse{
-    bool deleted = 1;
-}
+message DeleteAnythingResponse { bool deleted = 1; }
 
 // ListAnythingResponse ...
-message ListAnythingResponse{
-    repeated Anything anythings = 1;
-}
-
+message ListAnythingResponse { repeated Anything anythings = 1; }
