@@ -12,6 +12,7 @@ import (
 	"github.com/dhanusaputra/anywhat-server/pkg/logger"
 	"github.com/dhanusaputra/anywhat-server/pkg/service"
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type grpcServer struct {
@@ -40,4 +41,49 @@ func (s *grpcServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Login
 		return nil, err
 	}
 	return &pb.LoginResponse{Token: token}, nil
+}
+
+// GetUser ...
+func (s *grpcServer) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.GetUserResponse, error) {
+	u, err := s.user.Get(ctx, req.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.GetUserResponse{User: u}, nil
+}
+
+// ListUser ...
+func (s *grpcServer) ListUser(ctx context.Context, _ *emptypb.Empty) (*pb.ListUserResponse, error) {
+	us, err := s.user.List(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ListUserResponse{Users: us}, nil
+}
+
+// CreateUser ...
+func (s *grpcServer) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
+	id, err := s.user.Create(ctx, req.User)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.CreateUserResponse{Id: id}, nil
+}
+
+// UpdateUser ...
+func (s *grpcServer) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.UpdateUserResponse, error) {
+	success, err := s.user.Update(ctx, req.User)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.UpdateUserResponse{Updated: success}, nil
+}
+
+// DeleteUser ...
+func (s *grpcServer) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
+	success, err := s.user.Delete(ctx, req.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.DeleteUserResponse{Deleted: success}, nil
 }
