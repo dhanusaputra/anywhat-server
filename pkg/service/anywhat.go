@@ -87,8 +87,11 @@ func (s *anywhatService) List(ctx context.Context) ([]*pb.Anything, error) {
 }
 
 func (s *anywhatService) Create(ctx context.Context, anything *pb.Anything) (string, error) {
-	now := time.Now().In(time.UTC)
+	if len(anything.Name) == 0 {
+		return "", status.Error(codes.InvalidArgument, "name is required")
+	}
 
+	now := time.Now().In(time.UTC)
 	var id int
 	err := s.db.QueryRow("INSERT INTO anywhat(name,description,created_at,updated_at) VALUES($1,$2,$3,$4) returning id;", anything.Name, anything.Description, now, now).Scan(&id)
 	if err != nil {
