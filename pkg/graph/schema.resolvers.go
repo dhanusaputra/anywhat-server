@@ -6,6 +6,7 @@ package graph
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/dhanusaputra/anywhat-server/api/pb"
 	"github.com/dhanusaputra/anywhat-server/pkg/graph/generated"
@@ -55,6 +56,18 @@ func (r *mutationResolver) DeleteAnything(ctx context.Context, id string) (bool,
 		return false, err
 	}
 	return res.Deleted, nil
+}
+
+func (r *mutationResolver) CreateUser(ctx context.Context, input *model.UserInput) (string, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) UpdateUser(ctx context.Context, id string, input *model.UserInput) (bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (bool, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *queryResolver) GetAnything(ctx context.Context, id string) (*model.Anything, error) {
@@ -107,6 +120,14 @@ func (r *queryResolver) Me(ctx context.Context) (*model.User, error) {
 		ID:       user.Id,
 		Username: user.Username,
 	}, nil
+}
+
+func (r *queryResolver) GetUser(ctx context.Context, id string) (*model.User, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) ListUser(ctx context.Context) ([]*model.User, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 // Mutation returns generated.MutationResolver implementation.

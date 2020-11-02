@@ -1,14 +1,25 @@
 type Query {
-  getAnything(id: ID!): Anything!
-  listAnything: [Anything!]!
+  # anything
+  getAnything(id: ID!): Anything
+  listAnything: [Anything!]
+
+  # user_account
   login(username: String!, password: String!): String!
   me: User
+  getUser(id: ID!): User
+  listUser: [User!]
 }
 
 type Mutation {
+  # anything
   createAnything(input: AnythingInput): String!
   updateAnything(id: ID!, input: AnythingInput): Boolean!
   deleteAnything(id: ID!): Boolean!
+
+  # user_account
+  createUser(input: UserInput): String!
+  updateUser(id: ID!, input: UserInput): Boolean!
+  deleteUser(id: ID!): Boolean!
 }
 
 input AnythingInput {
@@ -24,11 +35,18 @@ type Anything {
   updatedAt: Time
 }
 
+input UserInput {
+  username: String!
+  password: String!
+}
+
 type User {
   id: ID!
   username: String!
   password: String
+  passwordHash: String
   createdAt: Time
+  updatedAt: Time
   lastLoginAt: Time
 }
 
