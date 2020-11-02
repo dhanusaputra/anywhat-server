@@ -3,7 +3,8 @@ CREATE TABLE IF NOT EXISTS user_account (
   username TEXT NOT NULL,
   password_hash TEXT NOT NULL,
   created_at timestamp NULL DEFAULT NULL,
-  updated_at timestamp NULL DEFAULT NULL
+  updated_at timestamp NULL DEFAULT NULL,
+  last_login_at timestamp NULL DEFAULT NULL
 );
 
 INSERT INTO user_account(username, password_hash)

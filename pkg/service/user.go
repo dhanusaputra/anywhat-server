@@ -77,26 +77,27 @@ func (s *userService) Login(ctx context.Context, username, password string) (str
 }
 
 func (s *userService) Get(ctx context.Context, id string) (*pb.User, error) {
-	rows, err := s.db.Query("SELECT id, name, description, created_at, updated_at FROM user WHERE id=$1", id)
+	rows, err := s.db.Query("SELECT id, username, created_at, updated_at, last_login_at FROM user_account WHERE id=$1", id)
 	if err != nil {
-		return nil, status.Errorf(codes.Unknown, "failed to query user, id: %s, err: %s", id, err.Error())
+		return nil, status.Errorf(codes.Unknown, "failed to query user_account, id: %s, err: %s", id, err.Error())
 	}
 	defer rows.Close()
 
 	for !rows.Next() {
 		if rows.Err() != nil {
-			return nil, status.Errorf(codes.Unknown, "failed to retrieve data from user, err: %s", err.Error())
+			return nil, status.Errorf(codes.Unknown, "failed to retrieve data from user_account, err: %s", err.Error())
 		}
-		return nil, status.Errorf(codes.NotFound, "user with ID: '%s' is not found", id)
+		return nil, status.Errorf(codes.NotFound, "user_account with ID: '%s' is not found", id)
 	}
 
-	var a pb.Anything
-	var createdAt, updatedAt time.Time
-	if err := rows.Scan(&a.Id, &a.Name, &a.Description, &createdAt, &updatedAt); err != nil {
-		return nil, status.Errorf(codes.Unknown, "failed to retrieve field values from user, err: %s", err.Error())
+	var u pb.User
+	var createdAt, updatedAt, lastLoginAt time.Time
+	if err := rows.Scan(&u.Id, &u.Username, &createdAt, &updatedAt, &lastLoginAt); err != nil {
+		return nil, status.Errorf(codes.Unknown, "failed to retrieve field values from user_account, err: %s", err.Error())
 	}
-	a.CreatedAt = timestamppb.New(createdAt)
-	a.UpdatedAt = timestamppb.New(updatedAt)
+	u.CreatedAt = timestamppb.New(createdAt)
+	u.UpdatedAt = timestamppb.New(updatedAt)
+	u.LastLoginAt = timestamppb.New(lastLoginAt)
 
 	if rows.Next() {
 		return nil, status.Errorf(codes.Unknown, "found multiple rows with ID: '%s'", id)
@@ -106,27 +107,27 @@ func (s *userService) Get(ctx context.Context, id string) (*pb.User, error) {
 }
 
 func (s *userService) List(ctx context.Context) ([]*pb.User, error) {
-	rows, err := s.db.Query("SELECT id, name, description, created_at, updated_at FROM user")
+	rows, err := s.db.Query("SELECT id, username, created_at, updated_at, last_login_at FROM user_account")
 	if err != nil {
-		return nil, status.Errorf(codes.Unknown, "failed to query user, err: %s", err.Error())
+		return nil, status.Errorf(codes.Unknown, "failed to query user_account, err: %s", err.Error())
 	}
 	defer rows.Close()
 
-	var createdAt, updatedAt time.Time
-	res := []*pb.Anything{}
+	var createdAt, lastLoginAt time.Time
+	res := []*pb.User{}
 	for rows.Next() {
-		var a pb.Anything
-		if err := rows.Scan(&a.Id, &a.Name, &a.Description, &createdAt, &updatedAt); err != nil {
-			return nil, status.Errorf(codes.Unknown, "failed to retrieve field values from user, err: %s", err.Error())
+		var u pb.User
+		if err := rows.Scan(&u.Id, &u.Username, &createdAt, &lastLoginAt); err != nil {
+			return nil, status.Errorf(codes.Unknown, "failed to retrieve field values from user_account, err: %s", err.Error())
 		}
-		a.CreatedAt = timestamppb.New(createdAt)
-		a.UpdatedAt = timestamppb.New(updatedAt)
+		u.CreatedAt = timestamppb.New(createdAt)
+		u.LastLoginAt = timestamppb.New(lastLoginAt)
 
-		res = append(res, &a)
+		res = append(res, &u)
 	}
 
 	if rows.Err() != nil {
-		return nil, status.Errorf(codes.Unknown, "failed to retrieve data from users, err: %s", err.Error())
+		return nil, status.Errorf(codes.Unknown, "failed to retrieve data from user_account, err: %s", err.Error())
 	}
 
 	return nil, nil
@@ -136,23 +137,28 @@ func (s *userService) Create(ctx context.Context, user *pb.User) (string, error)
 	now := time.Now().In(time.UTC)
 
 	var id int
-	err := s.db.QueryRow("INSERT INTO user(username,password,created_at,updated_at) VALUES($1,$2,$3,$4) returning id;", user.Username, user.Password, now, now).Scan(&id)
+	err := s.db.QueryRow("INSERT INTO user(username,password_hash,created_at, updated_at) VALUES($1, $2, $3, $4) returning id;", user.Username, user.Password, now, now).Scan(&id)
 	if err != nil {
-		return "", status.Errorf(codes.Unknown, "failed to insert into user, err: %s", err.Error())
+		return "", status.Errorf(codes.Unknown, "failed to insert into user_account, err: %s", err.Error())
 	}
 
 	return strconv.Itoa(id), nil
 }
 
 func (s *userService) Update(ctx context.Context, user *pb.User) (bool, error) {
-	stmt, err := s.db.Prepare("UPDATE user SET name=$1, description=$2, updated_at=$3 WHERE id=$4")
+	stmt, err := s.db.Prepare("UPDATE user_account SET password_hash=$1, updated_at=$2 WHERE id=$3")
 	if err != nil {
 		return false, status.Errorf(codes.Unknown, "failed to prepare update user, err: %s", err.Error())
 	}
 
-	res, err := stmt.Exec(user.Username, user.Password, time.Now().In(time.UTC), user.Id)
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.MaxCost)
 	if err != nil {
-		return false, status.Errorf(codes.Unknown, "failed to update user, err: %s", err.Error())
+		return false, status.Errorf(codes.Unknown, "failed to generate password, err: %v", err)
+	}
+
+	res, err := stmt.Exec(passwordHash, time.Now().In(time.UTC), user.Id)
+	if err != nil {
+		return false, status.Errorf(codes.Unknown, "failed to update user_account, err: %s", err.Error())
 	}
 
 	rows, err := res.RowsAffected()
@@ -161,21 +167,21 @@ func (s *userService) Update(ctx context.Context, user *pb.User) (bool, error) {
 	}
 
 	if rows == 0 {
-		return false, status.Errorf(codes.NotFound, "user with ID: '%s' is not found", user.Id)
+		return false, status.Errorf(codes.NotFound, "user_account with ID: '%s' is not found", user.Id)
 	}
 
 	return true, nil
 }
 
 func (s *userService) Delete(ctx context.Context, id string) (bool, error) {
-	stmt, err := s.db.Prepare("DELETE FROM user WHERE id=$1")
+	stmt, err := s.db.Prepare("DELETE FROM user_account WHERE id=$1")
 	if err != nil {
 		return false, status.Errorf(codes.Unknown, "failed to prepare delete user, err: %s", err.Error())
 	}
 
 	res, err := stmt.Exec(id)
 	if err != nil {
-		return false, status.Errorf(codes.Unknown, "failed to delete user, err: %s", err.Error())
+		return false, status.Errorf(codes.Unknown, "failed to delete user_account, err: %s", err.Error())
 	}
 
 	rows, err := res.RowsAffected()
@@ -184,7 +190,7 @@ func (s *userService) Delete(ctx context.Context, id string) (bool, error) {
 	}
 
 	if rows == 0 {
-		return false, status.Errorf(codes.NotFound, "user with ID: '%s' is not found", id)
+		return false, status.Errorf(codes.NotFound, "user_account with ID: '%s' is not found", id)
 	}
 
 	return true, nil

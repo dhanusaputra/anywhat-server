@@ -29,7 +29,8 @@ message User {
   string password = 3;
   string passwordHash = 4;
   google.protobuf.Timestamp createdAt = 5;
-  google.protobuf.Timestamp lastLoginAt = 6;
+  google.protobuf.Timestamp updatedAt = 6;
+  google.protobuf.Timestamp lastLoginAt = 7;
 }
 
 // LoginRequest ...
