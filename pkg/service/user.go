@@ -135,10 +135,18 @@ func (s *userService) List(ctx context.Context) ([]*pb.User, error) {
 }
 
 func (s *userService) Create(ctx context.Context, user *pb.User) (string, error) {
-	now := time.Now().In(time.UTC)
+	if len(user.Username) == 0 || len(user.Password) == 0 {
+		return "", status.Error(codes.InvalidArgument, "username and pasword are required")
+	}
 
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.MinCost)
+	if err != nil {
+		return "", status.Errorf(codes.Unknown, "failed to generate password, err: %v", err)
+	}
+
+	now := time.Now().In(time.UTC)
 	var id int
-	err := s.db.QueryRow("INSERT INTO user(username,password_hash,created_at, updated_at) VALUES($1, $2, $3, $4) returning id;", user.Username, user.Password, now, now).Scan(&id)
+	err = s.db.QueryRow("INSERT INTO user_account(username,password_hash,created_at, updated_at) VALUES($1, $2, $3, $4) returning id;", user.Username, passwordHash, now, now).Scan(&id)
 	if err != nil {
 		return "", status.Errorf(codes.Unknown, "failed to insert into user_account, err: %s", err.Error())
 	}
