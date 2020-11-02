@@ -39,7 +39,7 @@ func (s *anywhatService) Get(ctx context.Context, id string) (*pb.Anything, erro
 
 	for !rows.Next() {
 		if rows.Err() != nil {
-			return nil, status.Errorf(codes.Unknown, "failed to retrieve data from anything, err: %s", err.Error())
+			return nil, status.Errorf(codes.Unknown, "failed to retrieve data from anywhat, err: %s", err.Error())
 		}
 		return nil, status.Errorf(codes.NotFound, "anything with ID: '%s' is not found", id)
 	}
@@ -47,7 +47,7 @@ func (s *anywhatService) Get(ctx context.Context, id string) (*pb.Anything, erro
 	var a pb.Anything
 	var createdAt, updatedAt time.Time
 	if err := rows.Scan(&a.Id, &a.Name, &a.Description, &createdAt, &updatedAt); err != nil {
-		return nil, status.Errorf(codes.Unknown, "failed to retrieve field values from anything, err: %s", err.Error())
+		return nil, status.Errorf(codes.Unknown, "failed to retrieve field values from anywhat, err: %s", err.Error())
 	}
 	a.CreatedAt = timestamppb.New(createdAt)
 	a.UpdatedAt = timestamppb.New(updatedAt)
@@ -71,7 +71,7 @@ func (s *anywhatService) List(ctx context.Context) ([]*pb.Anything, error) {
 	for rows.Next() {
 		var a pb.Anything
 		if err := rows.Scan(&a.Id, &a.Name, &a.Description, &createdAt, &updatedAt); err != nil {
-			return nil, status.Errorf(codes.Unknown, "failed to retrieve field values from anything, err: %s", err.Error())
+			return nil, status.Errorf(codes.Unknown, "failed to retrieve field values from anywhat, err: %s", err.Error())
 		}
 		a.CreatedAt = timestamppb.New(createdAt)
 		a.UpdatedAt = timestamppb.New(updatedAt)
@@ -80,7 +80,7 @@ func (s *anywhatService) List(ctx context.Context) ([]*pb.Anything, error) {
 	}
 
 	if rows.Err() != nil {
-		return nil, status.Errorf(codes.Unknown, "failed to retrieve data from anythings, err: %s", err.Error())
+		return nil, status.Errorf(codes.Unknown, "failed to retrieve data from anywhat, err: %s", err.Error())
 	}
 
 	return res, nil
@@ -92,7 +92,7 @@ func (s *anywhatService) Create(ctx context.Context, anything *pb.Anything) (str
 	var id int
 	err := s.db.QueryRow("INSERT INTO anywhat(name,description,created_at,updated_at) VALUES($1,$2,$3,$4) returning id;", anything.Name, anything.Description, now, now).Scan(&id)
 	if err != nil {
-		return "", status.Errorf(codes.Unknown, "failed to insert into anything, err: %s", err.Error())
+		return "", status.Errorf(codes.Unknown, "failed to insert into anywhat, err: %s", err.Error())
 	}
 
 	return strconv.Itoa(id), nil
@@ -115,7 +115,7 @@ func (s *anywhatService) Update(ctx context.Context, anything *pb.Anything) (boo
 	}
 
 	if rows == 0 {
-		return false, status.Errorf(codes.NotFound, "anywhat with ID: '%s' is not found", anything.Id)
+		return false, status.Errorf(codes.NotFound, "anything with ID: '%s' is not found", anything.Id)
 	}
 
 	return true, nil
@@ -138,7 +138,7 @@ func (s *anywhatService) Delete(ctx context.Context, id string) (bool, error) {
 	}
 
 	if rows == 0 {
-		return false, status.Errorf(codes.NotFound, "anywhat with ID: '%s' is not found", id)
+		return false, status.Errorf(codes.NotFound, "anything with ID: '%s' is not found", id)
 	}
 
 	return true, nil
