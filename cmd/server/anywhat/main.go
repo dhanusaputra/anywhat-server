@@ -11,6 +11,7 @@ import (
 	"github.com/dhanusaputra/anywhat-server/pkg/logger"
 	"github.com/dhanusaputra/anywhat-server/pkg/service"
 	"github.com/dhanusaputra/anywhat-server/util/envutil"
+	"github.com/go-playground/validator"
 	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/lib/pq"
 )
@@ -45,9 +46,10 @@ func main() {
 		panic(err)
 	}
 	env.Init()
+	v := validator.New()
 
 	s := service.NewAnywhatService(db)
-	if err := anywhat.ListenGRPC(s, cfg); err != nil {
+	if err := anywhat.GRPCHandler(s, v, cfg); err != nil {
 		panic(err)
 	}
 }

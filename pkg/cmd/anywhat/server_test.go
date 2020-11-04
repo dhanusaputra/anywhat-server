@@ -36,7 +36,7 @@ func TestGetAnything(t *testing.T) {
 			mock: func() {
 				mockAnywhat = &mocks.Anywhat{}
 				mockAnywhat.On("Get", mock.Anything, mock.Anything).Return(&pb.Anything{}, nil)
-				s = &grpcServer{mockAnywhat}
+				s = &grpcServer{mockAnywhat, nil}
 			},
 			want: &pb.GetAnythingResponse{
 				Anything: &pb.Anything{},
@@ -51,7 +51,7 @@ func TestGetAnything(t *testing.T) {
 			mock: func() {
 				mockAnywhat = &mocks.Anywhat{}
 				mockAnywhat.On("Get", mock.Anything, mock.Anything).Return(nil, errors.New("err"))
-				s = &grpcServer{mockAnywhat}
+				s = &grpcServer{mockAnywhat, nil}
 			},
 			wantErr: true,
 		},
@@ -93,7 +93,7 @@ func TestListAnything(t *testing.T) {
 			mock: func() {
 				mockAnywhat = &mocks.Anywhat{}
 				mockAnywhat.On("List", mock.Anything, mock.Anything).Return([]*pb.Anything{}, nil)
-				s = &grpcServer{mockAnywhat}
+				s = &grpcServer{mockAnywhat, nil}
 			},
 			want: &pb.ListAnythingResponse{
 				Anythings: []*pb.Anything{},
@@ -107,7 +107,7 @@ func TestListAnything(t *testing.T) {
 			mock: func() {
 				mockAnywhat = &mocks.Anywhat{}
 				mockAnywhat.On("List", mock.Anything, mock.Anything).Return(nil, errors.New("err"))
-				s = &grpcServer{mockAnywhat}
+				s = &grpcServer{mockAnywhat, nil}
 			},
 			wantErr: true,
 		},
@@ -151,7 +151,7 @@ func TestCreateAnything(t *testing.T) {
 			mock: func() {
 				mockAnywhat = &mocks.Anywhat{}
 				mockAnywhat.On("Create", mock.Anything, mock.Anything).Return("", nil)
-				s = &grpcServer{mockAnywhat}
+				s = &grpcServer{mockAnywhat, nil}
 			},
 			want: &pb.CreateAnythingResponse{
 				Id: "",
@@ -166,7 +166,7 @@ func TestCreateAnything(t *testing.T) {
 			mock: func() {
 				mockAnywhat = &mocks.Anywhat{}
 				mockAnywhat.On("Create", mock.Anything, mock.Anything).Return("", errors.New("err"))
-				s = &grpcServer{mockAnywhat}
+				s = &grpcServer{mockAnywhat, nil}
 			},
 			wantErr: true,
 		},
@@ -210,7 +210,7 @@ func TestUpdateAnything(t *testing.T) {
 			mock: func() {
 				mockAnywhat = &mocks.Anywhat{}
 				mockAnywhat.On("Update", mock.Anything, mock.Anything).Return(true, nil)
-				s = &grpcServer{mockAnywhat}
+				s = &grpcServer{mockAnywhat, nil}
 			},
 			want: &pb.UpdateAnythingResponse{
 				Updated: true,
@@ -225,7 +225,7 @@ func TestUpdateAnything(t *testing.T) {
 			mock: func() {
 				mockAnywhat = &mocks.Anywhat{}
 				mockAnywhat.On("Update", mock.Anything, mock.Anything).Return(false, errors.New("err"))
-				s = &grpcServer{mockAnywhat}
+				s = &grpcServer{mockAnywhat, nil}
 			},
 			wantErr: true,
 		},
@@ -269,7 +269,7 @@ func TestDeleteAnything(t *testing.T) {
 			mock: func() {
 				mockAnywhat = &mocks.Anywhat{}
 				mockAnywhat.On("Delete", mock.Anything, mock.Anything).Return(true, nil)
-				s = &grpcServer{mockAnywhat}
+				s = &grpcServer{mockAnywhat, nil}
 			},
 			want: &pb.DeleteAnythingResponse{
 				Deleted: true,
@@ -284,7 +284,7 @@ func TestDeleteAnything(t *testing.T) {
 			mock: func() {
 				mockAnywhat = &mocks.Anywhat{}
 				mockAnywhat.On("Delete", mock.Anything, mock.Anything).Return(false, errors.New("err"))
-				s = &grpcServer{mockAnywhat}
+				s = &grpcServer{mockAnywhat, nil}
 			},
 			wantErr: true,
 		},
