@@ -34,10 +34,6 @@ func NewUserService(db *sql.DB) User {
 }
 
 func (s *userService) Login(ctx context.Context, username, password string) (string, error) {
-	if len(username) == 0 || len(password) == 0 {
-		return "", status.Error(codes.InvalidArgument, "username and pasword are required")
-	}
-
 	rows, err := s.db.Query("SELECT id, username, password_hash FROM user_account WHERE username=$1", username)
 	if err != nil {
 		return "", status.Errorf(codes.Unknown, "failed to query user, username: %s, err: %s", username, err.Error())
@@ -135,10 +131,6 @@ func (s *userService) List(ctx context.Context) ([]*pb.User, error) {
 }
 
 func (s *userService) Create(ctx context.Context, user *pb.User) (string, error) {
-	if len(user.Username) == 0 || len(user.Password) == 0 {
-		return "", status.Error(codes.InvalidArgument, "username and pasword are required")
-	}
-
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.MinCost)
 	if err != nil {
 		return "", status.Errorf(codes.Unknown, "failed to generate password, err: %v", err)

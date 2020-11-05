@@ -8,6 +8,8 @@ import (
 
 	"github.com/dhanusaputra/anywhat-server/api/pb"
 	"github.com/dhanusaputra/anywhat-server/mocks"
+	"github.com/dhanusaputra/anywhat-server/util/testutil"
+	"github.com/go-playground/validator"
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/stretchr/testify/mock"
 )
@@ -58,6 +60,7 @@ func TestGetAnything(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			defer testutil.NewPtrs([]interface{}{&s, &mockAnywhat}).Restore()
 			tt.mock()
 			got, err := s.GetAnything(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
@@ -114,6 +117,7 @@ func TestListAnything(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			defer testutil.NewPtrs([]interface{}{&s, &mockAnywhat}).Restore()
 			tt.mock()
 			got, err := s.ListAnything(tt.args.ctx, new(empty.Empty))
 			if (err != nil) != tt.wantErr {
@@ -133,8 +137,11 @@ func TestCreateAnything(t *testing.T) {
 		ctx context.Context
 		req *pb.CreateAnythingRequest
 	}
-	var s *grpcServer
-	var mockAnywhat *mocks.Anywhat
+	var (
+		s           *grpcServer
+		mockAnywhat *mocks.Anywhat
+		v           *validator.Validate = validator.New()
+	)
 	tests := []struct {
 		name    string
 		args    args
@@ -146,12 +153,12 @@ func TestCreateAnything(t *testing.T) {
 			name: "happy path",
 			args: args{
 				ctx: ctx,
-				req: &pb.CreateAnythingRequest{},
+				req: &pb.CreateAnythingRequest{Anything: &pb.Anything{Name: "mock"}},
 			},
 			mock: func() {
 				mockAnywhat = &mocks.Anywhat{}
 				mockAnywhat.On("Create", mock.Anything, mock.Anything).Return("", nil)
-				s = &grpcServer{mockAnywhat, nil}
+				s = &grpcServer{mockAnywhat, v}
 			},
 			want: &pb.CreateAnythingResponse{
 				Id: "",
@@ -166,13 +173,14 @@ func TestCreateAnything(t *testing.T) {
 			mock: func() {
 				mockAnywhat = &mocks.Anywhat{}
 				mockAnywhat.On("Create", mock.Anything, mock.Anything).Return("", errors.New("err"))
-				s = &grpcServer{mockAnywhat, nil}
+				s = &grpcServer{mockAnywhat, v}
 			},
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			defer testutil.NewPtrs([]interface{}{&s, &mockAnywhat}).Restore()
 			tt.mock()
 			got, err := s.CreateAnything(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
@@ -192,8 +200,11 @@ func TestUpdateAnything(t *testing.T) {
 		ctx context.Context
 		req *pb.UpdateAnythingRequest
 	}
-	var s *grpcServer
-	var mockAnywhat *mocks.Anywhat
+	var (
+		s           *grpcServer
+		mockAnywhat *mocks.Anywhat
+		v           *validator.Validate = validator.New()
+	)
 	tests := []struct {
 		name    string
 		args    args
@@ -205,12 +216,12 @@ func TestUpdateAnything(t *testing.T) {
 			name: "happy path",
 			args: args{
 				ctx: ctx,
-				req: &pb.UpdateAnythingRequest{},
+				req: &pb.UpdateAnythingRequest{Anything: &pb.Anything{Name: "mock"}},
 			},
 			mock: func() {
 				mockAnywhat = &mocks.Anywhat{}
 				mockAnywhat.On("Update", mock.Anything, mock.Anything).Return(true, nil)
-				s = &grpcServer{mockAnywhat, nil}
+				s = &grpcServer{mockAnywhat, v}
 			},
 			want: &pb.UpdateAnythingResponse{
 				Updated: true,
@@ -225,13 +236,14 @@ func TestUpdateAnything(t *testing.T) {
 			mock: func() {
 				mockAnywhat = &mocks.Anywhat{}
 				mockAnywhat.On("Update", mock.Anything, mock.Anything).Return(false, errors.New("err"))
-				s = &grpcServer{mockAnywhat, nil}
+				s = &grpcServer{mockAnywhat, v}
 			},
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			defer testutil.NewPtrs([]interface{}{&s, &mockAnywhat}).Restore()
 			tt.mock()
 			got, err := s.UpdateAnything(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {
@@ -291,6 +303,7 @@ func TestDeleteAnything(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			defer testutil.NewPtrs([]interface{}{&s, &mockAnywhat}).Restore()
 			tt.mock()
 			got, err := s.DeleteAnything(tt.args.ctx, tt.args.req)
 			if (err != nil) != tt.wantErr {

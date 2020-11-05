@@ -12,6 +12,8 @@ import (
 	"github.com/go-playground/validator"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -55,16 +57,15 @@ func (s *grpcServer) ListAnything(ctx context.Context, _ *emptypb.Empty) (*pb.Li
 
 // CreateAnything ...
 func (s *grpcServer) CreateAnything(ctx context.Context, req *pb.CreateAnythingRequest) (*pb.CreateAnythingResponse, error) {
-	v := createAnythingRequest{
-		ID:          req.Anything.Id,
-		Name:        req.Anything.Name,
-		Description: req.Anything.Description,
-		CreatedAt:   req.Anything.CreatedAt,
-		UpdatedAt:   req.Anything.UpdatedAt,
+	if req.Anything == nil {
+		return nil, status.Error(codes.InvalidArgument, "anything empty")
 	}
 
+	v := &createAnythingRequest{
+		Name: req.Anything.Name,
+	}
 	if err := s.validate.Struct(v); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	id, err := s.anywhat.Create(ctx, req.Anything)
@@ -77,16 +78,15 @@ func (s *grpcServer) CreateAnything(ctx context.Context, req *pb.CreateAnythingR
 
 // UpdateAnything ...
 func (s *grpcServer) UpdateAnything(ctx context.Context, req *pb.UpdateAnythingRequest) (*pb.UpdateAnythingResponse, error) {
-	v := updateAnythingRequest{
-		ID:          req.Anything.Id,
-		Name:        req.Anything.Name,
-		Description: req.Anything.Description,
-		CreatedAt:   req.Anything.CreatedAt,
-		UpdatedAt:   req.Anything.UpdatedAt,
+	if req.Anything == nil {
+		return nil, status.Error(codes.InvalidArgument, "anything empty")
 	}
 
+	v := &updateAnythingRequest{
+		Name: req.Anything.Name,
+	}
 	if err := s.validate.Struct(v); err != nil {
-		return nil, err
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	success, err := s.anywhat.Update(ctx, req.Anything)

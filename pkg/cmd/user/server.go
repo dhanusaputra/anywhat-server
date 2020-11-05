@@ -11,16 +11,20 @@ import (
 	"github.com/dhanusaputra/anywhat-server/pkg/cmd/middleware"
 	"github.com/dhanusaputra/anywhat-server/pkg/logger"
 	"github.com/dhanusaputra/anywhat-server/pkg/service"
+	"github.com/go-playground/validator"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type grpcServer struct {
-	user service.User
+	user     service.User
+	validate *validator.Validate
 }
 
-// ListenGRPC ...
-func ListenGRPC(s service.User, cfg cmd.Config) error {
+// GRPCHandler ...
+func GRPCHandler(s service.User, v *validator.Validate, cfg cmd.Config) error {
 	lis, err := net.Listen("tcp", ":"+cfg.UserPort)
 	if err != nil {
 		return err
@@ -28,7 +32,7 @@ func ListenGRPC(s service.User, cfg cmd.Config) error {
 	opts := []grpc.ServerOption{}
 	opts = middleware.AddLogging(logger.Log, opts)
 	serv := grpc.NewServer(opts...)
-	pb.RegisterUserServiceServer(serv, &grpcServer{s})
+	pb.RegisterUserServiceServer(serv, &grpcServer{s, v})
 	// start gRPC server
 	logger.Log.Info("starting gRPC server...", zap.String("url", cfg.UserPort))
 	return serv.Serve(lis)
@@ -36,6 +40,14 @@ func ListenGRPC(s service.User, cfg cmd.Config) error {
 
 // Login ...
 func (s *grpcServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
+	v := &loginRequest{
+		Username: req.Username,
+		Password: req.Password,
+	}
+	if err := s.validate.Struct(v); err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	token, err := s.user.Login(ctx, req.Username, req.Password)
 	if err != nil {
 		return nil, err
@@ -63,6 +75,18 @@ func (s *grpcServer) ListUser(ctx context.Context, _ *emptypb.Empty) (*pb.ListUs
 
 // CreateUser ...
 func (s *grpcServer) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
+	if req.User == nil {
+		return nil, status.Error(codes.InvalidArgument, "user empty")
+	}
+
+	v := &createUserRequest{
+		Username: req.User.Username,
+		Password: req.User.Password,
+	}
+	if err := s.validate.Struct(v); err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	id, err := s.user.Create(ctx, req.User)
 	if err != nil {
 		return nil, err
