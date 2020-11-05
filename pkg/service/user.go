@@ -112,7 +112,7 @@ func (s *userService) List(ctx context.Context) ([]*pb.User, error) {
 	var createdAt, updatedAt, lastLoginAt time.Time
 	res := []*pb.User{}
 	for rows.Next() {
-		var u pb.User
+		var u *pb.User
 		if err := rows.Scan(&u.Id, &u.Username, &createdAt, &updatedAt, &lastLoginAt); err != nil {
 			return nil, status.Errorf(codes.Unknown, "failed to retrieve field values from user_account, err: %s", err.Error())
 		}
@@ -120,7 +120,7 @@ func (s *userService) List(ctx context.Context) ([]*pb.User, error) {
 		u.UpdatedAt = timestamppb.New(updatedAt)
 		u.LastLoginAt = timestamppb.New(lastLoginAt)
 
-		res = append(res, &u)
+		res = append(res, u)
 	}
 
 	if rows.Err() != nil {

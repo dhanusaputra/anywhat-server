@@ -69,14 +69,14 @@ func (s *anywhatService) List(ctx context.Context) ([]*pb.Anything, error) {
 	var createdAt, updatedAt time.Time
 	res := []*pb.Anything{}
 	for rows.Next() {
-		var a pb.Anything
+		a := &pb.Anything{}
 		if err := rows.Scan(&a.Id, &a.Name, &a.Description, &createdAt, &updatedAt); err != nil {
 			return nil, status.Errorf(codes.Unknown, "failed to retrieve field values from anywhat, err: %s", err.Error())
 		}
 		a.CreatedAt = timestamppb.New(createdAt)
 		a.UpdatedAt = timestamppb.New(updatedAt)
 
-		res = append(res, &a)
+		res = append(res, a)
 	}
 
 	if rows.Err() != nil {
