@@ -27,6 +27,8 @@ func main() {
 	var cfg cmd.Config
 	flag.IntVar(&cfg.LogLevel, "log-level", -1, "Global log level")
 	flag.StringVar(&cfg.LogTimeFormat, "log-time-format", "2006-01-02T15:04:05.999999999Z07:00", "Print time format for logger e.g. 006-01-02T15:04:05Z07:00")
+	flag.Parse()
+
 	// initialize logger
 	if err := logger.Init(cfg.LogLevel, cfg.LogTimeFormat); err != nil {
 		panic(err)
