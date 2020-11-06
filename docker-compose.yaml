@@ -7,8 +7,6 @@ services:
       dockerfile: "./cmd/server/anywhat/app.dockerfile"
     depends_on:
       - "db_anywhat"
-    ports:
-      - "9090:9090"
     env_file:
       - .env
     restart: "on-failure"
@@ -19,8 +17,6 @@ services:
       dockerfile: "./cmd/server/user/app.dockerfile"
     depends_on:
       - "db_user"
-    ports:
-      - "9091:9091"
     env_file:
       - .env
     restart: "on-failure"
