@@ -428,7 +428,7 @@ type Anything {
 }
 
 input UserInput {
-  username: String!
+  username: String
   password: String!
 }
 
@@ -2726,7 +2726,7 @@ func (ec *executionContext) unmarshalInputUserInput(ctx context.Context, obj int
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("username"))
-			it.Username, err = ec.unmarshalNString2string(ctx, v)
+			it.Username, err = ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}

@@ -74,7 +74,19 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input *model.UserInpu
 }
 
 func (r *mutationResolver) UpdateUser(ctx context.Context, id string, input *model.UserInput) (bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	user := authutil.GetUserContext(ctx)
+	if user == nil {
+		return false, errors.New("access denied")
+	}
+	res, err := r.userClient.UpdateUser(ctx, &pb.UpdateUserRequest{User: &pb.User{
+		Id:       id,
+		Username: input.Username,
+		Password: input.Password,
+	}})
+	if err != nil {
+		return false, err
+	}
+	return res.Updated, nil
 }
 
 func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (bool, error) {

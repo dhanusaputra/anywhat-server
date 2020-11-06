@@ -138,7 +138,7 @@ func (s *userService) Create(ctx context.Context, user *pb.User) (string, error)
 
 	now := time.Now().In(time.UTC)
 	var id int
-	err = s.db.QueryRow("INSERT INTO user_account(username,password_hash,created_at, updated_at) VALUES($1, $2, $3, $4) returning id;", user.Username, passwordHash, now, now).Scan(&id)
+	err = s.db.QueryRow("INSERT INTO user_account(username, password_hash, created_at, updated_at) VALUES($1, $2, $3, $4) returning id;", user.Username, passwordHash, now, now).Scan(&id)
 	if err != nil {
 		return "", status.Errorf(codes.Unknown, "failed to insert into user_account, err: %s", err.Error())
 	}
