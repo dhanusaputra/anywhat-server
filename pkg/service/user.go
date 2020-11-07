@@ -86,20 +86,23 @@ func (s *userService) Get(ctx context.Context, id string) (*pb.User, error) {
 		return nil, status.Errorf(codes.NotFound, "user_account with ID: '%s' is not found", id)
 	}
 
-	var u pb.User
-	var createdAt, updatedAt, lastLoginAt time.Time
+	var (
+		createdAt, updatedAt time.Time
+		lastLoginAt          sql.NullTime
+	)
+	u := &pb.User{}
 	if err := rows.Scan(&u.Id, &u.Username, &createdAt, &updatedAt, &lastLoginAt); err != nil {
 		return nil, status.Errorf(codes.Unknown, "failed to retrieve field values from user_account, err: %s", err.Error())
 	}
 	u.CreatedAt = timestamppb.New(createdAt)
 	u.UpdatedAt = timestamppb.New(updatedAt)
-	u.LastLoginAt = timestamppb.New(lastLoginAt)
+	u.LastLoginAt = timestamppb.New(lastLoginAt.Time)
 
 	if rows.Next() {
 		return nil, status.Errorf(codes.Unknown, "found multiple rows with ID: '%s'", id)
 	}
 
-	return nil, nil
+	return u, nil
 }
 
 func (s *userService) List(ctx context.Context) ([]*pb.User, error) {
@@ -109,16 +112,19 @@ func (s *userService) List(ctx context.Context) ([]*pb.User, error) {
 	}
 	defer rows.Close()
 
-	var createdAt, updatedAt, lastLoginAt time.Time
+	var (
+		createdAt, updatedAt time.Time
+		lastLoginAt          sql.NullTime
+	)
 	res := []*pb.User{}
 	for rows.Next() {
-		var u *pb.User
+		u := &pb.User{}
 		if err := rows.Scan(&u.Id, &u.Username, &createdAt, &updatedAt, &lastLoginAt); err != nil {
 			return nil, status.Errorf(codes.Unknown, "failed to retrieve field values from user_account, err: %s", err.Error())
 		}
 		u.CreatedAt = timestamppb.New(createdAt)
 		u.UpdatedAt = timestamppb.New(updatedAt)
-		u.LastLoginAt = timestamppb.New(lastLoginAt)
+		u.LastLoginAt = timestamppb.New(lastLoginAt.Time)
 
 		res = append(res, u)
 	}
@@ -127,7 +133,7 @@ func (s *userService) List(ctx context.Context) ([]*pb.User, error) {
 		return nil, status.Errorf(codes.Unknown, "failed to retrieve data from user_account, err: %s", err.Error())
 	}
 
-	return nil, nil
+	return res, nil
 }
 
 func (s *userService) Create(ctx context.Context, user *pb.User) (string, error) {

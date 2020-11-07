@@ -6,7 +6,6 @@ package graph
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/dhanusaputra/anywhat-server/api/pb"
 	"github.com/dhanusaputra/anywhat-server/pkg/graph/generated"
@@ -90,7 +89,15 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, id string, input *mod
 }
 
 func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	user := authutil.GetUserContext(ctx)
+	if user == nil {
+		return false, errors.New("access denied")
+	}
+	res, err := r.userClient.DeleteUser(ctx, &pb.DeleteUserRequest{Id: id})
+	if err != nil {
+		return false, err
+	}
+	return res.Deleted, nil
 }
 
 func (r *queryResolver) GetAnything(ctx context.Context, id string) (*model.Anything, error) {
@@ -146,11 +153,36 @@ func (r *queryResolver) Me(ctx context.Context) (*model.User, error) {
 }
 
 func (r *queryResolver) GetUser(ctx context.Context, id string) (*model.User, error) {
-	panic(fmt.Errorf("not implemented"))
+	res, err := r.userClient.GetUser(ctx, &pb.GetUserRequest{Id: id})
+	if err != nil {
+		return nil, err
+	}
+	return &model.User{
+		ID:          res.User.Id,
+		Username:    res.User.Username,
+		CreatedAt:   res.User.CreatedAt.AsTime(),
+		UpdatedAt:   res.User.UpdatedAt.AsTime(),
+		LastLoginAt: res.User.LastLoginAt.AsTime(),
+	}, nil
 }
 
 func (r *queryResolver) ListUser(ctx context.Context) ([]*model.User, error) {
-	panic(fmt.Errorf("not implemented"))
+	res, err := r.userClient.ListUser(ctx, new(empty.Empty))
+	if err != nil {
+		return nil, err
+	}
+	a := res.Users
+	m := make([]*model.User, 0, len(a))
+	for _, aa := range a {
+		m = append(m, &model.User{
+			ID:          aa.Id,
+			Username:    aa.Username,
+			CreatedAt:   aa.CreatedAt.AsTime(),
+			UpdatedAt:   aa.UpdatedAt.AsTime(),
+			LastLoginAt: aa.LastLoginAt.AsTime(),
+		})
+	}
+	return m, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.
