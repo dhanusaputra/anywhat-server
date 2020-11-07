@@ -88,6 +88,10 @@ func (s *grpcServer) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) 
 
 // DeleteUser ...
 func (s *grpcServer) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
+	if req.Id == "1" {
+		return nil, status.Error(codes.InvalidArgument, "cannot delete admin")
+	}
+
 	success, err := s.user.Delete(ctx, req.Id)
 	if err != nil {
 		return nil, err
