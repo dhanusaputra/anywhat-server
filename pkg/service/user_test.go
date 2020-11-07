@@ -51,6 +51,8 @@ func TestLogin(t *testing.T) {
 				authutil.SignJWT = func(user *pb.User) (string, error) {
 					return "mockToken", nil
 				}
+				mock.ExpectPrepare("UPDATE user_account").ExpectExec().WithArgs(AnyTime{}, "1").
+					WillReturnResult(sqlmock.NewResult(1, 1))
 			},
 		},
 		{

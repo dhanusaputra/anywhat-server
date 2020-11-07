@@ -69,6 +69,25 @@ func (s *userService) Login(ctx context.Context, username, password string) (str
 		return "", status.Errorf(codes.Unknown, "failed to login, err: %v", err)
 	}
 
+	stmt, err := s.db.Prepare("UPDATE user_account SET last_login_at=$1, updated_at=$1 WHERE id=$2")
+	if err != nil {
+		return "", status.Errorf(codes.Unknown, "failed to prepare update user, err: %s", err.Error())
+	}
+
+	res, err := stmt.Exec(time.Now().In(time.UTC), u.Id)
+	if err != nil {
+		return "", status.Errorf(codes.Unknown, "failed to update user, err: %s", err.Error())
+	}
+
+	r, err := res.RowsAffected()
+	if err != nil {
+		return "", status.Errorf(codes.Unknown, "failed to retrieve rows affected value, err: %s ", err.Error())
+	}
+
+	if r == 0 {
+		return "", status.Errorf(codes.NotFound, "user with ID: '%s' is not found", u.Id)
+	}
+
 	return token, nil
 }
 
