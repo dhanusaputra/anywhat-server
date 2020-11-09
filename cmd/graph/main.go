@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -17,6 +18,7 @@ import (
 	"github.com/dhanusaputra/anywhat-server/pkg/logger"
 	"github.com/dhanusaputra/anywhat-server/util/envutil"
 	"github.com/go-chi/chi"
+	"github.com/go-chi/httprate"
 	_ "github.com/joho/godotenv/autoload"
 	"go.uber.org/zap"
 )
@@ -50,15 +52,16 @@ func main() {
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: resolver}))
 
-	router := chi.NewRouter()
+	r := chi.NewRouter()
 
-	router.Use(middleware.AddRequestID)
-	router.Use(middleware.AddLogger)
-	router.Use(middleware.AddAuth)
+	r.Use(middleware.AddRequestID)
+	r.Use(middleware.AddLogger)
+	r.Use(middleware.AddAuth)
+	r.Use(httprate.Limit(10, 1*time.Minute, httprate.KeyByIP))
 
-	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	router.Handle("/query", srv)
+	r.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	r.Handle("/query", srv)
 
 	logger.Log.Info("connect to GraphQL playground", zap.String("host", fmt.Sprintf("http://localhost:%s/", gqlPort)))
-	logger.Log.Fatal("listenAndServe failed", zap.Error(http.ListenAndServe(":"+gqlPort, router)))
+	logger.Log.Fatal("listenAndServe failed", zap.Error(http.ListenAndServe(":"+gqlPort, r)))
 }
