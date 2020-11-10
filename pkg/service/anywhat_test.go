@@ -102,7 +102,7 @@ func TestGet(t *testing.T) {
 				id:  "1",
 			},
 			mock: func() {
-				mock.ExpectQuery("SELECT (.+) FROM ToDo").
+				mock.ExpectQuery("SELECT (.+) FROM anywhat").
 					WillReturnError(errors.New("err"))
 			},
 			wantErr: true,

@@ -39,7 +39,7 @@ func (s *anywhatService) Get(ctx context.Context, id string) (*pb.Anything, erro
 
 	for !rows.Next() {
 		if rows.Err() != nil {
-			return nil, status.Errorf(codes.Unknown, "failed to retrieve data from anywhat, err: %s", err.Error())
+			return nil, status.Errorf(codes.Unknown, "failed to retrieve data from anywhat, err: %s", rows.Err().Error())
 		}
 		return nil, status.Errorf(codes.NotFound, "anything with ID: '%s' is not found", id)
 	}
@@ -80,7 +80,7 @@ func (s *anywhatService) List(ctx context.Context) ([]*pb.Anything, error) {
 	}
 
 	if rows.Err() != nil {
-		return nil, status.Errorf(codes.Unknown, "failed to retrieve data from anywhat, err: %s", err.Error())
+		return nil, status.Errorf(codes.Unknown, "failed to retrieve data from anywhat, err: %s", rows.Err().Error())
 	}
 
 	return res, nil

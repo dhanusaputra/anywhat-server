@@ -42,7 +42,7 @@ func (s *userService) Login(ctx context.Context, username, password string) (str
 
 	for !rows.Next() {
 		if rows.Err() != nil {
-			return "", status.Errorf(codes.Unknown, "failed to retrieve data from user_account, err: %s", err.Error())
+			return "", status.Errorf(codes.Unknown, "failed to retrieve data from user_account, err: %s", rows.Err().Error())
 		}
 		return "", status.Errorf(codes.NotFound, "user with username: '%s' is not found", username)
 	}
@@ -100,7 +100,7 @@ func (s *userService) Get(ctx context.Context, id string) (*pb.User, error) {
 
 	for !rows.Next() {
 		if rows.Err() != nil {
-			return nil, status.Errorf(codes.Unknown, "failed to retrieve data from user_account, err: %s", err.Error())
+			return nil, status.Errorf(codes.Unknown, "failed to retrieve data from user_account, err: %s", rows.Err().Error())
 		}
 		return nil, status.Errorf(codes.NotFound, "user_account with ID: '%s' is not found", id)
 	}
@@ -149,7 +149,7 @@ func (s *userService) List(ctx context.Context) ([]*pb.User, error) {
 	}
 
 	if rows.Err() != nil {
-		return nil, status.Errorf(codes.Unknown, "failed to retrieve data from user_account, err: %s", err.Error())
+		return nil, status.Errorf(codes.Unknown, "failed to retrieve data from user_account, err: %s", rows.Err().Error())
 	}
 
 	return res, nil
