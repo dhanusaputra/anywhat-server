@@ -340,3 +340,247 @@ func TestMe(t *testing.T) {
 		})
 	}
 }
+
+func TestCreateUser(t *testing.T) {
+	mockUserClient := &mocks.UserServiceClient{}
+	tests := []struct {
+		name    string
+		mock    func()
+		want    string
+		wantErr bool
+	}{
+		{
+			name: "happy path",
+			mock: func() {
+				authutil.GetUserContext = func(ctx context.Context) *pb.User {
+					return &pb.User{}
+				}
+				mockUserClient.On("CreateUser", mock.Anything, mock.Anything).Return(&pb.CreateUserResponse{Id: "mockID"}, nil).Once()
+			},
+			want: "mockID",
+		},
+		{
+			name: "failed auth",
+			mock: func() {
+				authutil.GetUserContext = func(ctx context.Context) *pb.User {
+					return nil
+				}
+			},
+			wantErr: true,
+		},
+		{
+			name: "failed create",
+			mock: func() {
+				authutil.GetUserContext = func(ctx context.Context) *pb.User {
+					return &pb.User{}
+				}
+				mockUserClient.On("CreateUser", mock.Anything, mock.Anything).Return(nil, errors.New("err")).Once()
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			defer testutil.NewPtrs([]interface{}{&mockUserClient, &authutil.GetUserContext}).Restore()
+			tt.mock()
+			r := NewResolver(nil, mockUserClient)
+			m := mutationResolver{r}
+			got, err := m.CreateUser(context.Background(), &model.UserInput{})
+			if (err != nil) != tt.wantErr {
+				t.Errorf("CreateUser() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("CreateUser() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestUpdateUser(t *testing.T) {
+	mockUserClient := &mocks.UserServiceClient{}
+	tests := []struct {
+		name    string
+		mock    func()
+		want    bool
+		wantErr bool
+	}{
+		{
+			name: "happy path",
+			mock: func() {
+				authutil.GetUserContext = func(ctx context.Context) *pb.User {
+					return &pb.User{}
+				}
+				mockUserClient.On("UpdateUser", mock.Anything, mock.Anything).Return(&pb.UpdateUserResponse{Updated: true}, nil).Once()
+			},
+			want: true,
+		},
+		{
+			name: "failed auth",
+			mock: func() {
+				authutil.GetUserContext = func(ctx context.Context) *pb.User {
+					return nil
+				}
+			},
+			wantErr: true,
+		},
+		{
+			name: "failed update",
+			mock: func() {
+				authutil.GetUserContext = func(ctx context.Context) *pb.User {
+					return &pb.User{}
+				}
+				mockUserClient.On("UpdateUser", mock.Anything, mock.Anything).Return(nil, errors.New("err")).Once()
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			defer testutil.NewPtrs([]interface{}{&mockUserClient, &authutil.GetUserContext}).Restore()
+			tt.mock()
+			r := NewResolver(nil, mockUserClient)
+			m := mutationResolver{r}
+			got, err := m.UpdateUser(context.Background(), "mockID", &model.UserInput{})
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UpdateUser() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("UpdateUser() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestDeleteUser(t *testing.T) {
+	mockUserClient := &mocks.UserServiceClient{}
+	tests := []struct {
+		name    string
+		mock    func()
+		want    bool
+		wantErr bool
+	}{
+		{
+			name: "happy path",
+			mock: func() {
+				authutil.GetUserContext = func(ctx context.Context) *pb.User {
+					return &pb.User{}
+				}
+				mockUserClient.On("DeleteUser", mock.Anything, mock.Anything).Return(&pb.DeleteUserResponse{Deleted: true}, nil).Once()
+			},
+			want: true,
+		},
+		{
+			name: "failed auth",
+			mock: func() {
+				authutil.GetUserContext = func(ctx context.Context) *pb.User {
+					return nil
+				}
+			},
+			wantErr: true,
+		},
+		{
+			name: "failed delete",
+			mock: func() {
+				authutil.GetUserContext = func(ctx context.Context) *pb.User {
+					return &pb.User{}
+				}
+				mockUserClient.On("DeleteUser", mock.Anything, mock.Anything).Return(nil, errors.New("err")).Once()
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			defer testutil.NewPtrs([]interface{}{&mockUserClient, &authutil.GetUserContext}).Restore()
+			tt.mock()
+			r := NewResolver(nil, mockUserClient)
+			m := mutationResolver{r}
+			got, err := m.DeleteUser(context.Background(), "mockID")
+			if (err != nil) != tt.wantErr {
+				t.Errorf("DeleteUser() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DeleteUser() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetUser(t *testing.T) {
+	mockUserClient := &mocks.UserServiceClient{}
+	tests := []struct {
+		name    string
+		mock    func()
+		want    *model.User
+		wantErr bool
+	}{
+		{
+			name: "happy path",
+			mock: func() {
+				mockUserClient.On("GetUser", mock.Anything, mock.Anything).Return(&pb.GetUserResponse{User: &pb.User{}}, nil).Once()
+			},
+			want: &model.User{},
+		},
+		{
+			name: "failed get",
+			mock: func() {
+				mockUserClient.On("GetUser", mock.Anything, mock.Anything).Return(nil, errors.New("err")).Once()
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			defer testutil.NewPtrs([]interface{}{&mockUserClient}).Restore()
+			tt.mock()
+			r := NewResolver(nil, mockUserClient)
+			q := queryResolver{r}
+			_, err := q.GetUser(context.Background(), "mockID")
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetUser() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
+func TestListUser(t *testing.T) {
+	mockUserClient := &mocks.UserServiceClient{}
+	tests := []struct {
+		name    string
+		mock    func()
+		want    *model.User
+		wantErr bool
+	}{
+		{
+			name: "happy path",
+			mock: func() {
+				mockUserClient.On("ListUser", mock.Anything, mock.Anything).Return(&pb.ListUserResponse{Users: []*pb.User{&pb.User{}}}, nil).Once()
+			},
+			want: &model.User{},
+		},
+		{
+			name: "failed list",
+			mock: func() {
+				mockUserClient.On("ListUser", mock.Anything, mock.Anything).Return(nil, errors.New("err")).Once()
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			defer testutil.NewPtrs([]interface{}{&mockUserClient}).Restore()
+			tt.mock()
+			r := NewResolver(nil, mockUserClient)
+			q := queryResolver{r}
+			_, err := q.ListUser(context.Background())
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ListUser() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}

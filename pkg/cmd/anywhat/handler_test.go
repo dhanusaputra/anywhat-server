@@ -165,10 +165,32 @@ func TestCreateAnything(t *testing.T) {
 			},
 		},
 		{
-			name: "failed create",
+			name: "anything nill",
 			args: args{
 				ctx: ctx,
 				req: &pb.CreateAnythingRequest{},
+			},
+			mock: func() {
+				s = &grpcServer{mockAnywhat, v}
+			},
+			wantErr: true,
+		},
+		{
+			name: "failed validate",
+			args: args{
+				ctx: ctx,
+				req: &pb.CreateAnythingRequest{Anything: &pb.Anything{Name: "m"}},
+			},
+			mock: func() {
+				s = &grpcServer{mockAnywhat, v}
+			},
+			wantErr: true,
+		},
+		{
+			name: "failed create",
+			args: args{
+				ctx: ctx,
+				req: &pb.CreateAnythingRequest{Anything: &pb.Anything{Name: "mock"}},
 			},
 			mock: func() {
 				mockAnywhat = &mocks.Anywhat{}
@@ -228,10 +250,32 @@ func TestUpdateAnything(t *testing.T) {
 			},
 		},
 		{
-			name: "failed update",
+			name: "anything nil",
 			args: args{
 				ctx: ctx,
 				req: &pb.UpdateAnythingRequest{},
+			},
+			mock: func() {
+				s = &grpcServer{mockAnywhat, v}
+			},
+			wantErr: true,
+		},
+		{
+			name: "failed validate",
+			args: args{
+				ctx: ctx,
+				req: &pb.UpdateAnythingRequest{Anything: &pb.Anything{Name: "m"}},
+			},
+			mock: func() {
+				s = &grpcServer{mockAnywhat, v}
+			},
+			wantErr: true,
+		},
+		{
+			name: "failed update",
+			args: args{
+				ctx: ctx,
+				req: &pb.UpdateAnythingRequest{Anything: &pb.Anything{Name: "mock"}},
 			},
 			mock: func() {
 				mockAnywhat = &mocks.Anywhat{}
