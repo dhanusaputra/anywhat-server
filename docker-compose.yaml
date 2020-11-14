@@ -4,7 +4,7 @@ services:
   anywhat_server:
     build:
       context: "."
-      dockerfile: "./cmd/server/anywhat/Dockerfile.anywhatapp"
+      dockerfile: "./Dockerfile.anywhatapp"
     depends_on:
       - "db_anywhat"
     env_file:
@@ -14,7 +14,7 @@ services:
   user_server:
     build:
       context: "."
-      dockerfile: "./cmd/server/user/Dockerfile.userapp"
+      dockerfile: "./Dockerfile.userapp"
     depends_on:
       - "db_user"
     env_file:
@@ -24,7 +24,7 @@ services:
   graph_server:
     build:
       context: "."
-      dockerfile: "./cmd/graph/Dockerfile.graphapp"
+      dockerfile: "./Dockerfile.graphapp"
     depends_on:
       - "anywhat_server"
       - "user_server"
