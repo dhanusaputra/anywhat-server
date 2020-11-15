@@ -10,4 +10,9 @@ mock: ## generate mocks from mockery
 gqlgen: ## generate gqlgen
 	go run github.com/99designs/gqlgen generate
 
+heroku: ## deploy heroku
+	heroku container:login
+	heroku container:push --recursive
+	heroku container:release db_anywhat db_user anywhat_server user_server graph_server
+
 .DEFAULT_GOAL := help

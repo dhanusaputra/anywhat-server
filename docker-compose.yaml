@@ -4,7 +4,7 @@ services:
   anywhat_server:
     build:
       context: "."
-      dockerfile: "./Dockerfile.anywhatapp"
+      dockerfile: "./Dockerfile.anywhat_server"
     depends_on:
       - "db_anywhat"
     env_file:
@@ -14,7 +14,7 @@ services:
   user_server:
     build:
       context: "."
-      dockerfile: "./Dockerfile.userapp"
+      dockerfile: "./Dockerfile.user_server"
     depends_on:
       - "db_user"
     env_file:
@@ -24,7 +24,7 @@ services:
   graph_server:
     build:
       context: "."
-      dockerfile: "./Dockerfile.graphapp"
+      dockerfile: "./Dockerfile.graph_server"
     depends_on:
       - "anywhat_server"
       - "user_server"
@@ -37,7 +37,7 @@ services:
   db_anywhat:
     build:
       context: "./pkg/db/anywhat"
-      dockerfile: "Dockerfile.anywhatdb"
+      dockerfile: "Dockerfile.db_anywhat"
     environment:
       POSTGRES_DB: "postgres"
       POSTGRES_USER: "postgres"
@@ -47,7 +47,7 @@ services:
   db_user:
     build:
       context: "./pkg/db/user"
-      dockerfile: "Dockerfile.userdb"
+      dockerfile: "Dockerfile.db_user"
     environment:
       POSTGRES_DB: "postgres"
       POSTGRES_USER: "postgres"
