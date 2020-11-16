@@ -38,19 +38,15 @@ services:
     build:
       context: "./pkg/db/anywhat"
       dockerfile: "Dockerfile.db_anywhat"
-    environment:
-      POSTGRES_DB: "postgres"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
+    env_file:
+      - .env
     restart: "unless-stopped"
 
   db_user:
     build:
       context: "./pkg/db/user"
       dockerfile: "Dockerfile.db_user"
-    environment:
-      POSTGRES_DB: "postgres"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
+    env_file:
+      - .env
     restart: "unless-stopped"
   
