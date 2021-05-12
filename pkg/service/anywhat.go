@@ -102,6 +102,7 @@ func (s *anywhatService) Update(ctx context.Context, anything *pb.Anything) (boo
 	if err != nil {
 		return false, status.Errorf(codes.Unknown, "failed to prepare update anything, err: %s", err.Error())
 	}
+	defer stmt.Close()
 
 	res, err := stmt.Exec(anything.Name, anything.Description, time.Now().In(time.UTC), anything.Id)
 	if err != nil {
@@ -125,6 +126,7 @@ func (s *anywhatService) Delete(ctx context.Context, id string) (bool, error) {
 	if err != nil {
 		return false, status.Errorf(codes.Unknown, "failed to prepare delete anything, err: %s", err.Error())
 	}
+	defer stmt.Close()
 
 	res, err := stmt.Exec(id)
 	if err != nil {
