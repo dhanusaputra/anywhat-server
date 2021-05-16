@@ -73,7 +73,7 @@ func (s *userService) Login(ctx context.Context, username, password string) (str
 	if err != nil {
 		return "", status.Errorf(codes.Unknown, "failed to prepare update user, err: %s", err.Error())
 	}
-  defer stmt.Close()
+	defer stmt.Close()
 
 	res, err := stmt.Exec(time.Now().In(time.UTC), u.Id)
 	if err != nil {
@@ -177,7 +177,7 @@ func (s *userService) Update(ctx context.Context, user *pb.User) (bool, error) {
 	if err != nil {
 		return false, status.Errorf(codes.Unknown, "failed to prepare update user, err: %s", err.Error())
 	}
-  defer stmt.Close()
+	defer stmt.Close()
 
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.MinCost)
 	if err != nil {
