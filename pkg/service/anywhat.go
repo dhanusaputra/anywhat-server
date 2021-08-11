@@ -37,7 +37,7 @@ func (s *anywhatService) Get(ctx context.Context, id string) (*pb.Anything, erro
 	}
 	defer rows.Close()
 
-	for !rows.Next() {
+	if !rows.Next() {
 		if rows.Err() != nil {
 			return nil, status.Errorf(codes.Unknown, "failed to retrieve data from anywhat, err: %s", rows.Err().Error())
 		}

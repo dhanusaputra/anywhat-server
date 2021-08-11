@@ -40,7 +40,7 @@ func (s *userService) Login(ctx context.Context, username, password string) (str
 	}
 	defer rows.Close()
 
-	for !rows.Next() {
+	if !rows.Next() {
 		if rows.Err() != nil {
 			return "", status.Errorf(codes.Unknown, "failed to retrieve data from user_account, err: %s", rows.Err().Error())
 		}
@@ -99,7 +99,7 @@ func (s *userService) Get(ctx context.Context, id string) (*pb.User, error) {
 	}
 	defer rows.Close()
 
-	for !rows.Next() {
+	if !rows.Next() {
 		if rows.Err() != nil {
 			return nil, status.Errorf(codes.Unknown, "failed to retrieve data from user_account, err: %s", rows.Err().Error())
 		}

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/dhanusaputra/anywhat-server/api/pb"
 	"github.com/dhanusaputra/anywhat-server/pkg/env"
+	"github.com/golang-jwt/jwt"
 )
 
 const (

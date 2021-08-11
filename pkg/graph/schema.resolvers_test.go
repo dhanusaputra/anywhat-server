@@ -231,7 +231,7 @@ func TestListAnything(t *testing.T) {
 		{
 			name: "happy path",
 			mock: func() {
-				mockAnywhatClient.On("ListAnything", mock.Anything, mock.Anything).Return(&pb.ListAnythingResponse{Anythings: []*pb.Anything{&pb.Anything{}}}, nil).Once()
+				mockAnywhatClient.On("ListAnything", mock.Anything, mock.Anything).Return(&pb.ListAnythingResponse{Anythings: []*pb.Anything{{}}}, nil).Once()
 			},
 			want: &model.Anything{},
 		},
@@ -558,7 +558,7 @@ func TestListUser(t *testing.T) {
 		{
 			name: "happy path",
 			mock: func() {
-				mockUserClient.On("ListUser", mock.Anything, mock.Anything).Return(&pb.ListUserResponse{Users: []*pb.User{&pb.User{}}}, nil).Once()
+				mockUserClient.On("ListUser", mock.Anything, mock.Anything).Return(&pb.ListUserResponse{Users: []*pb.User{{}}}, nil).Once()
 			},
 			want: &model.User{},
 		},

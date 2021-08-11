@@ -409,13 +409,15 @@ func TestUserList(t *testing.T) {
 			args: args{
 				ctx: ctx,
 			},
-			want: []*pb.User{&pb.User{
-				Id:          "1",
-				Username:    "username",
-				CreatedAt:   tnow,
-				UpdatedAt:   tnow,
-				LastLoginAt: tnow,
-			}},
+			want: []*pb.User{
+				{
+					Id:          "1",
+					Username:    "username",
+					CreatedAt:   tnow,
+					UpdatedAt:   tnow,
+					LastLoginAt: tnow,
+				},
+			},
 			mock: func() {
 				rows := sqlmock.NewRows([]string{"id", "username", "created_at", "updated_at", "last_login_at"}).
 					AddRow("1", "username", now, now, now)

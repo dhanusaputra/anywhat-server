@@ -3,8 +3,8 @@ package authutil
 import (
 	"testing"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/dhanusaputra/anywhat-server/api/pb"
+	"github.com/golang-jwt/jwt"
 	"github.com/stretchr/testify/assert"
 )
 
