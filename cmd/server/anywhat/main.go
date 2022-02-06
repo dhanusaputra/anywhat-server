@@ -21,7 +21,6 @@ var (
 	host     = envutil.GetEnv("DB_ANYWHAT_HOST", "")
 	port     = envutil.GetEnv("PORT", "5432")
 	user     = envutil.GetEnv("USER", "")
-	name     = envutil.GetEnv("NAME", "")
 	password = envutil.GetEnv("PASSWORD", "")
 
 	anywhatPort = envutil.GetEnv("ANYWHAT_PORT", "9090")
