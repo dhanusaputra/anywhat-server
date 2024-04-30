@@ -10,8 +10,7 @@ require (
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/golang-jwt/jwt v3.2.2+incompatible
-	github.com/golang/protobuf v1.4.2
-	github.com/google/go-cmp v0.5.1 // indirect
+	github.com/golang/protobuf v1.5.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/joho/godotenv v1.3.0
 	github.com/leodido/go-urn v1.2.0 // indirect
@@ -24,7 +23,7 @@ require (
 	golang.org/x/text v0.3.8 // indirect
 	google.golang.org/genproto v0.0.0-20200804131852-c06518451d9c // indirect
 	google.golang.org/grpc v1.31.0
-	google.golang.org/protobuf v1.25.0
+	google.golang.org/protobuf v1.33.0
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 	honnef.co/go/tools v0.0.1-2020.1.4 // indirect
