@@ -19,9 +19,8 @@ require (
 	github.com/stretchr/testify v1.6.1
 	github.com/vektah/gqlparser/v2 v2.1.0
 	go.uber.org/zap v1.15.0
-	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
+	golang.org/x/crypto v0.17.0
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
-	golang.org/x/text v0.3.8 // indirect
 	google.golang.org/genproto v0.0.0-20200804131852-c06518451d9c // indirect
 	google.golang.org/grpc v1.31.0
 	google.golang.org/protobuf v1.25.0
